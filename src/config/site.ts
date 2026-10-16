@@ -13,10 +13,10 @@ export const site = {
 
   repoUrl: 'https://github.com/ItsmeEremiyaaaa/techcase-booth',
 
-  /** PLACEHOLDER marks — replace the files (keep the names) or change the paths. */
+  /** Logo marks. The TechCase mark is still a PLACEHOLDER — replace the file with the official logo. */
   logos: {
     techcase: 'assets/brand/techcase-mark-placeholder.svg',
-    studyquest: 'assets/brand/studyquest-mark-placeholder.svg',
+    studyquest: 'assets/brand/studyquest-mark.svg',
   },
 
   /** Still render shown when 3D is unavailable. Re-render it if the scene changes a lot. */

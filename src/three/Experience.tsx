@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { CameraControls, ContactShadows, Environment, Html, Lightformer, PerformanceMonitor, useProgress } from '@react-three/drei'
-import { Flag, Megaphone, QrCode, Smartphone, Table2, Users } from 'lucide-react'
+import { BookOpen, Flag, Megaphone, QrCode, Smartphone, Table2, Users } from 'lucide-react'
 import { boothObjects, type ObjectId } from '../content/booth'
 import { panelOpen, registerCamera, selectObject, store, useStore, type Quality, type ViewId } from '../lib/store'
 import { Booth, EventDressing, Students } from './Booth'
@@ -31,6 +31,7 @@ const ICONS: Record<ObjectId, typeof Flag> = {
   devices: Smartphone,
   qr: QrCode,
   students: Users,
+  brochure: BookOpen,
 }
 
 function Controls({ reducedMotion }: { reducedMotion: boolean }) {
@@ -217,7 +218,7 @@ function Lights({ quality }: { quality: Quality }) {
       {quality !== 'low' && (
         <>
           <primitive object={spotTarget} position={[0, 1.2, -4.8]} />
-          <spotLight position={[0, 5.2, 1.2]} angle={0.7} penumbra={0.9} intensity={38} distance={14} decay={2} color="#FFFFFF" target={spotTarget} />
+          <spotLight position={[0, 5.2, 1.2]} angle={0.7} penumbra={0.9} intensity={12} distance={14} decay={2} color="#FFFFFF" target={spotTarget} />
         </>
       )}
       <Environment resolution={quality === 'high' ? 256 : 128} frames={1}>
@@ -271,8 +272,8 @@ export default function Experience({ quality, reducedMotion, visible }: Experien
       aria-hidden="true"
       tabIndex={-1}
     >
-      <color attach="background" args={['#E6ECF7']} />
-      <fog attach="fog" args={['#E6ECF7', 45, 110]} />
+      <color attach="background" args={['#F1E8DE']} />
+      <fog attach="fog" args={['#F1E8DE', 45, 110]} />
       <PerformanceMonitor flipflops={3} onDecline={() => setDpr(1)} onIncline={() => setDpr(Math.min(s.dpr, window.devicePixelRatio))} onFallback={() => setDpr(1)} />
       <ContextGuard />
       <ProgressReporter />

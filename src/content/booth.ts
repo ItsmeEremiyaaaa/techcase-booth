@@ -3,7 +3,7 @@
  * Dimensions are in metres. Anything with `estimate: true` is a planning estimate.
  */
 
-export type ObjectId = 'table' | 'backdrop' | 'banner' | 'devices' | 'qr' | 'students'
+export type ObjectId = 'table' | 'backdrop' | 'banner' | 'devices' | 'qr' | 'students' | 'brochure'
 
 export interface Spec {
   label: string
@@ -29,6 +29,8 @@ export interface BoothObject {
   steps?: { title: string; body: string }[]
   image?: string
   imageAlt?: string
+  /** tall images (banners) are shown narrower */
+  tall?: boolean
 }
 
 export const boothObjects: Record<ObjectId, BoothObject> = {
@@ -37,15 +39,15 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     kicker: 'Booth & table',
     title: 'Demo table',
     summary:
-      'A folding table with a fitted royal-blue cover. It holds the demo phones and tablet running StudyQuest, two QR stands and a stack of StudyQuest brochures.',
+      'A folding table dressed in StudyQuest orange, with the app logo and “Study. Compete. Level Up.” on the front. It holds the demo phones and tablet, two QR stands and the StudyQuest brochures.',
     specs: [
       { label: 'Table (W × D)', value: [1.83, 0.76], estimate: true },
       { label: 'Table height', value: [0.74], estimate: true },
       { label: 'Booth footprint (W × D)', value: [4.4, 3.4], estimate: true },
     ],
     materials: [
-      'Fitted royal-blue table cover with a printed StudyQuest front panel',
-      'Blue floor mat under the booth',
+      'Fitted StudyQuest-orange table cover with a printed front panel',
+      'Dark brown floor mat with an orange edge, matching the app colours',
       'Acrylic stands for the phones and the tablet',
       'Extension cord and power banks to keep the demo devices charged',
     ],
@@ -55,40 +57,59 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     kicker: 'Main backdrop',
     title: 'Promotional backdrop',
     summary:
-      'The large wall behind the table. It carries the TechCase event branding and introduces StudyQuest with real screens from the app.',
-    headline: 'StudyQuest — Level up your study game.',
-    tagline: 'A gamified quiz app for students: play quizzes, earn XP and climb the weekly league.',
-    messages: ['Daily quests', 'Weekly leagues', 'Versus & boss fights', 'Flashcard review', 'Scan the QR at our table to play'],
-    purpose: 'Makes the booth recognizable from across the court and frames the demo for photos.',
+      'The large wall behind the team, styled like the StudyQuest roll-up: the fox mascot, the app on a phone, the four headline features and the courses it covers.',
+    headline: 'Turn review time into a quest.',
+    tagline: 'Timed quizzes, real XP and weekly leagues for you and your classmates.',
+    messages: ['20-second rounds', '30 achievements', 'Weekly leagues, Bronze to Diamond', 'Boss battles every week', 'Quizzes for BSED, BSBA, BEED, BSIT and Basic Ed'],
+    purpose: 'Makes the booth recognizable from across the court and frames the team and demo for photos.',
     specs: [
       { label: 'Printed area (W × H)', value: [3.0, 2.4], estimate: true },
       { label: 'Viewing distance', text: '5–15 m across the court' },
     ],
     image: 'assets/textures/backdrop.webp',
-    imageAlt: 'Backdrop design: TechCase branding, the StudyQuest headline, four feature tiles and two phones showing the app.',
+    imageAlt: 'StudyQuest backdrop: logo, “Turn review time into a quest.”, the fox mascot, a phone with the app, four feature tiles and the supported courses.',
   },
   banner: {
     id: 'banner',
-    kicker: 'Vertical banner',
-    title: 'Roll-up banner',
-    summary: 'A tall pull-up standee at the aisle edge of the booth that catches students walking past.',
-    headline: 'Level up your study game.',
-    tagline: 'Quizzes, XP, leagues and achievements, built for students.',
-    messages: ['Earn XP and level up', 'Climb the weekly league', 'Versus & boss fights', '30 achievements to unlock', 'Play it now at our table'],
-    purpose: 'Pulls foot traffic from the aisle toward the table. The headline sits at eye level; the lower panel lists features and the call to action.',
+    kicker: 'Roll-up banner',
+    title: 'StudyQuest roll-up',
+    summary: 'The team’s 33 × 80 inch pull-up banner at the aisle edge of the booth. It catches students walking past and ends with a QR code to start playing.',
+    headline: 'Turn review time into a quest.',
+    tagline: 'Study. Compete. Level Up.',
+    messages: ['20-second rounds', '30 achievements with bonus XP', 'Weekly leagues, Bronze to Diamond', 'Boss battles, a new boss every week', 'Scan to start your quest · English & Tagalog'],
+    purpose: 'Pulls foot traffic from the aisle toward the table. The headline and the fox sit at eye level; the QR code is within reach at the bottom.',
     specs: [
-      { label: 'Banner (W × H)', value: [0.85, 2.0], estimate: true },
+      { label: 'Size', text: '33 × 80 in (84 × 203 cm)' },
       { label: 'Readable from', text: '3–6 m' },
     ],
     image: 'assets/textures/rollup.webp',
-    imageAlt: 'Roll-up banner design: TechCase header, StudyQuest logo, headline, the app home screen, a feature list and a call to action.',
+    imageAlt: 'StudyQuest roll-up banner: logo, “Turn review time into a quest.”, the fox mascot, features, courses and a QR code.',
+    tall: true,
+  },
+  brochure: {
+    id: 'brochure',
+    kicker: 'Brochure',
+    title: 'StudyQuest brochure',
+    summary: 'A tri-fold brochure that visitors can take home. It walks through how to play in four steps and links to the app and the feedback page.',
+    steps: [
+      { title: 'Pick a subject', body: 'BSIT, BSED, BEED, BSBA and Basic Ed quizzes, new every day.' },
+      { title: 'Answer quizzes', body: 'Every question gives you 20 seconds. Think fast, answer smart.' },
+      { title: 'Earn XP & badges', body: 'Level up, collect coins and unlock achievements.' },
+      { title: 'Climb the leaderboard', body: 'The top 5 in your league move up every week.' },
+    ],
+    specs: [
+      { label: 'Format', text: 'Tri-fold, letter size, landscape' },
+      { label: 'Contact', text: 'escubidojeremiah@smcbi.edu.ph' },
+    ],
+    image: 'assets/textures/brochure.webp',
+    imageAlt: 'Outside of the StudyQuest tri-fold brochure: how to play in four steps, a QR code to start your quest, and the cover with the fox mascot.',
   },
   devices: {
     id: 'devices',
     kicker: 'Device demo area',
     title: 'Phones & tablet',
     summary:
-      'Two phones and a tablet on stands run StudyQuest so visitors can play right away. Booth reps guide first-time players through a quiz.',
+      'Two phones and a tablet on stands run StudyQuest so visitors can play right away. The team guides first-time players through a quiz.',
     specs: [
       { label: 'Demo devices', text: '2 phones + 1 tablet' },
       { label: 'Try it', text: 'Daily challenge or one subject quiz' },
@@ -98,7 +119,7 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     id: 'qr',
     kicker: 'QR stands',
     title: 'QR code stands',
-    summary: 'Two table stands and a floor sign open StudyQuest on the visitor’s own phone, so they can keep playing after they leave the booth.',
+    summary: 'Two table stands and a floor sign open StudyQuest on the visitor’s own phone. It plays in the browser, or they can tap Install to add it to their device.',
     specs: [
       { label: 'Table stands', text: 'A5 acrylic sign holders' },
       { label: 'Floor sign', text: 'A3 poster on a pedestal stand' },
@@ -110,16 +131,16 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     title: 'How students try StudyQuest',
     summary: 'The open space in front of the table, inside the court’s centre circle, is where visitors gather, scan and play.',
     steps: [
-      { title: 'Discover', body: 'Students spot the backdrop and roll-up from the aisle, and a booth rep invites them over.' },
-      { title: 'Scan', body: 'They scan the QR code on a table stand or the floor sign to open StudyQuest on their phone.' },
-      { title: 'Play', body: 'They try the daily challenge or a subject quiz on a demo device and watch their XP and level go up.' },
-      { title: 'Compete', body: 'They join the weekly league and leaderboards, and come back for daily quests and the boss of the week.' },
+      { title: 'Discover', body: 'Students spot the backdrop and roll-up from the aisle, and someone from the team invites them over.' },
+      { title: 'Scan', body: 'They scan the QR code to open StudyQuest in the browser, or tap Install to add it to their phone.' },
+      { title: 'Play', body: 'They try the daily challenge or a 20-second-per-question quiz and watch their XP go up.' },
+      { title: 'Compete', body: 'They join the weekly league and come back for daily quests and the boss of the week.' },
     ],
-    specs: [{ label: 'Booth reps', text: '2 — one demos, one helps visitors scan and sign in' }],
+    specs: [{ label: 'Team at the booth', text: '4 — demos, scanning help and sign-ups' }],
   },
 }
 
-export const objectOrder: ObjectId[] = ['table', 'backdrop', 'banner', 'devices', 'qr', 'students']
+export const objectOrder: ObjectId[] = ['table', 'backdrop', 'banner', 'brochure', 'devices', 'qr', 'students']
 
 /** Real StudyQuest screenshots (public/assets/screens). Replace the files to update them. */
 export const appScreens = [
@@ -134,58 +155,56 @@ export const appScreens = [
 
 export const tabletScreen = { src: 'assets/screens/tablet.webp', title: 'Tablet', caption: 'Home and the weekly league side by side on the demo tablet.' }
 
-/** "About StudyQuest" panel content. Every item is visible in the live app. */
+/** "About StudyQuest" panel content (from the app, the brochure and the roll-up). */
 export const appInfo = {
-  tagline: 'Level up your study game.',
+  tagline: 'Turn review time into a quest.',
+  slogan: ['Study.', 'Compete.', 'Level Up.'],
   intro:
-    'StudyQuest turns reviewing into a game. Students play subject quizzes, earn XP and coins, keep streaks, and compete in weekly leagues with classmates.',
+    'StudyQuest is a gamified quiz app for SMCBI students. Pick a subject, answer timed questions, earn XP and coins, and climb the weekly league with your classmates.',
+  courses: ['BSIT', 'BSED', 'BEED', 'BSBA', 'Basic Ed'],
   groups: [
     {
       title: 'Play and learn',
       icon: 'book',
       items: [
-        'Subject quizzes (Cybersecurity, Networking Basics, Programming and more) with Easy, Medium and Hard filters',
-        'Quiz of the day: a Mystery quiz in sudden-death mode, where one miss ends it',
-        'Survival mode: 3 lives, endless questions',
-        'Mastery stars: ★ finish, ★★ score 90%+, ★★★ perfect in under 10 seconds a question',
-        'Flashcard review with cards due each day, plus your own decks',
+        'Quizzes for BSIT, BSED, BEED, BSBA and Basic Ed, new every day',
+        '20-second rounds: think fast, answer smart',
+        'Quiz of the day: a Mystery quiz in sudden-death mode',
+        'Survival mode (3 lives) and mastery stars for perfect runs',
+        'Flashcard review and your own decks',
       ],
     },
     {
       title: 'Daily motivation',
       icon: 'flame',
-      items: [
-        'A daily challenge with bonus XP',
-        'Daily quests that pay coins, and a mystery chest for finishing them all',
-        'Levels, XP, coins and streaks on the home screen',
-        'A shop and a study planner',
-      ],
+      items: ['A daily challenge with bonus XP', 'Daily quests that pay coins, plus a mystery chest', 'Levels, XP, coins and daily streaks', 'A shop and a study planner'],
     },
     {
       title: 'Compete together',
       icon: 'trophy',
       items: [
-        'Weekly leagues (Bronze, Silver, Gold and Diamond), where the top 5 move up and the bottom 5 move down',
+        'Weekly leagues from Bronze to Diamond: the top 5 move up',
         'Leaderboards: Overall, Subjects, Friends and Versus',
-        'Weekly subject titles for the top 4 in each subject',
-        'Versus matches, a rival of the week and a weekly boss fight',
-        'Course vs course results every week',
+        'Versus matches and a rival of the week',
+        'Boss battles, with a new boss every week',
       ],
     },
     {
       title: 'Grow and get recognized',
       icon: 'award',
-      items: ['30 achievements with bonus XP', 'Badges and profile titles such as “Programming Student”'],
+      items: ['30 achievements with bonus XP', 'Badges and weekly subject titles'],
     },
     {
       title: 'Built for classes',
       icon: 'users',
-      items: [
-        'My section: questionnaires from your teachers',
-        'Teacher mode for managing sections and questionnaires',
-        'Write a question: students can add their own questions to the app',
-      ],
+      items: ['My section: questionnaires from your teachers', 'Teacher mode for sections and questionnaires', 'Write a question: add your own to the app'],
     },
   ],
-  builtWith: 'Built with React Native (Expo) and Firebase by a six-person BSIT capstone team.',
+  access: [
+    'Play in your browser, or tap Install to add it to your device',
+    'Available in English & Tagalog',
+  ],
+  feedbackUrl: 'https://itsmeeremiyaaaa.github.io/StudyQuestTesting/',
+  email: 'escubidojeremiah@smcbi.edu.ph',
+  builtWith: 'A capstone project by BSIT students of St. Mary’s College of Bansalan, Inc., Bansalan, Davao del Sur. Built with React Native (Expo) and Firebase.',
 } as const

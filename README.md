@@ -5,18 +5,19 @@ A full-screen, real-time 3D walk-through of the **TechCase** campus technology s
 It is a static site (React + Vite + Three.js) with no backend, published on GitHub Pages:
 **https://itsmeeremiyaaaa.github.io/techcase-booth/**
 
-> The TechCase and StudyQuest marks are placeholder artwork. App screens are real StudyQuest screenshots. Booth dimensions are planning estimates.
+> The booth uses the real StudyQuest roll-up, brochure, fox mascot and app screenshots. The TechCase mark is still placeholder artwork. Team bios are sample text. Booth dimensions are planning estimates.
 
 ---
 
 ## What's in it
 
 - **Full-screen 3D gym.** A basketball court with line markings and hoops, bleachers with spectators, a scoreboard, the TechCase wall banner, neighbouring booths and students walking around.
-- **StudyQuest booth.** Floor mat, a 3 × 2.4 m backdrop with LED arm lights, a blue-covered demo table with a printed front, a roll-up banner, QR stands, two phones and a tablet showing real app screens, brochures, balloon columns, two booth reps and visiting students.
+- **StudyQuest booth, in the app's colours.** A dark brown mat with an orange edge, a 3 × 2.4 m StudyQuest backdrop with the fox mascot, an orange table cover with the logo and “Study. Compete. Level Up.”, the team's real 33 × 80 in roll-up, a stack of the real tri-fold brochures, StudyQuest-styled QR stands, two phones and a tablet with real app screens, and orange, cream, purple and gold balloon columns.
+- **The team.** Jeremiah (Developer & Project Leader) stands in the centre behind the tablet, with Peter, Sharwin and Joemar beside him. Hover or tap anyone (or their name tag) to see their profile; the selected member waves. A Team panel lists all four.
 - **Interaction.** Hover highlights, outlines and floor markers, clickable pins, and an info panel for each booth part (a bottom sheet on phones).
-- **About StudyQuest panel.** The app's features, a swipeable gallery of real screenshots, a QR code and a "Play StudyQuest" button.
+- **About StudyQuest panel.** The fox mascot, the app's features and supported courses, a swipeable gallery of real screenshots, a QR code, a "Play StudyQuest" button, the feedback page and the contact email.
 - **Camera.** Smooth orbit, zoom and limited panning; Reset and Focus booth buttons; presets for Overview, Table, Banner, Devices, Visitors and Full court; keyboard control.
-- **Welcome card.** Shown after loading, with "Explore the booth" and "About StudyQuest".
+- **Welcome card.** Shown after loading, with "Explore the booth", "About StudyQuest" and "Meet the team".
 - **Performance.** A quality setting per device (Auto/High/Medium/Low), a capped pixel ratio that drops automatically when the frame rate does, instancing for repeated objects, shared geometry and materials freed on unmount, and code-splitting so the 3D bundle loads after the first paint.
 - **Fallback.** A still render with every booth panel and the About panel still available, used automatically when WebGL is missing or the scene fails to start.
 - **Accessibility.** Real buttons with labels and visible focus, keyboard camera control, Esc to close panels, and reduced-motion support (no idle animation, instant camera moves).
@@ -26,10 +27,11 @@ It is a static site (React + Vite + Three.js) with no backend, published on GitH
 | | |
 |---|---|
 | Framework | React 19 + TypeScript, Vite 7 |
+| Look | StudyQuest palette (orange, cream, brown, purple, gold), Fredoka + Nunito like the app's print materials |
 | 3D | three.js 0.180, @react-three/fiber 9, @react-three/drei 10 |
 | Icons | lucide-react |
 | QR codes | qrcode (generated in the browser) |
-| Fonts | Sora + Plus Jakarta Sans, self-hosted via @fontsource |
+| Fonts | Fredoka + Nunito, self-hosted via @fontsource |
 | Deploy | GitHub Actions → GitHub Pages |
 
 Everything (textures, fonts, icons) ships with the site. There are no runtime requests to third-party servers.
@@ -68,16 +70,17 @@ For another base path: `VITE_BASE=/my-repo/ npm run build`, or `VITE_BASE=/` for
 .github/workflows/deploy.yml   Build + deploy to GitHub Pages on every push to main
 design-src/                    HTML templates for the tablet screen and the print textures
 public/assets/
-  brand/                       Placeholder logo marks (replace with official files)
+  brand/                       StudyQuest bolt mark, fox mascot card, TechCase placeholder mark
   screens/                     Real StudyQuest screenshots (phones) + tablet composite
-  textures/                    Backdrop, roll-up, table front, wall banner, scoreboard
+  textures/                    Backdrop, roll-up (from the team's PDF), brochure, table front, wall banner, scoreboard
   fallback/                    Still render used when 3D is unavailable
 src/
   config/site.ts               Event/app names, app link for QR codes, logo paths
   content/booth.ts             Booth copy, app screen captions, About StudyQuest content
+  content/team.ts              The four developers: names, roles, sample bios
   components/Showcase.tsx      Full-screen layout: top bar, bottom bar, welcome card, panels
   components/InfoPanel.tsx     Booth-part panel and About StudyQuest panel
-  three/                       3D scene: Experience, Court, Booth, People, views, textures
+  three/                       3D scene: Experience, Court, Booth, Team, People, views, textures
   lib/                         Small store, device detection
   styles/global.css            All styles
 ```
@@ -88,9 +91,12 @@ src/
 |---|---|
 | The app link in every QR code and button | `qrUrl` in `src/config/site.ts` |
 | About StudyQuest text and feature list | `appInfo` in `src/content/booth.ts` |
+| Team names, roles and bios (bios are sample text) | `src/content/team.ts` |
+| Where each team member stands and how they look | `TEAM_SPOTS` in `src/three/views.ts` |
 | Booth panel copy and dimensions | `boothObjects` in `src/content/booth.ts` |
 | App screenshots | Replace files in `public/assets/screens/` (374 × 810 phone crops) and update `appScreens` captions |
-| Logos | Replace `public/assets/brand/*-placeholder.svg` |
+| Logos | `studyquest-mark.svg` (redrawn bolt mark); replace `techcase-mark-placeholder.svg` with the official TechCase logo |
+| Roll-up | Replace `design-src/StudyQuest-Rollup-Banner-33x80.pdf`, then `python3 design-src/render.py rollup` (needs poppler) |
 | Backdrop, roll-up, table front, tablet screen | Edit `design-src/print.html` / `design-src/screens.html`, then re-render (below) |
 | Camera presets and pin positions | `src/three/views.ts` |
 
@@ -99,7 +105,7 @@ src/
 ```bash
 pip install playwright pillow && python -m playwright install chromium
 node design-src/build-icons.mjs
-python3 design-src/render.py          # or: render.py screens | print
+python3 design-src/render.py          # or: render.py screens | print | rollup
 ```
 
 Screenshots that show other students' names were left out of the gallery and the booth artwork on purpose. Keep that in mind if you add more.
@@ -126,4 +132,4 @@ One-time setup (already done for this repo): **Settings → Pages → Source: Gi
 
 ## Credits
 
-Icons: [Lucide](https://lucide.dev) (ISC). Fonts: Sora, Plus Jakarta Sans (SIL OFL) via Fontsource. 3D: three.js, @react-three/fiber, @react-three/drei (MIT).
+Icons: [Lucide](https://lucide.dev) (ISC). Fonts: Fredoka, Nunito (SIL OFL) via Fontsource. StudyQuest artwork (roll-up, brochure, fox mascot) by the StudyQuest team. 3D: three.js, @react-three/fiber, @react-three/drei (MIT).

@@ -5,6 +5,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { basic, geo, mat } from './shared'
 import { useImageTexture } from './textures'
+import { Hl } from './Interactive'
 import { BLEACHER } from './Court'
 
 /* Stylized procedural people: shared geometry, cached materials, light idle motion. */
@@ -28,7 +29,9 @@ export interface PersonProps {
   headPitch?: number
   backpack?: string
   lanyard?: boolean
+  lanyardColor?: string
   rep?: boolean
+  patchColor?: string
   phase?: number
   animate?: boolean
   castShadow?: boolean
@@ -130,6 +133,7 @@ export function Person(p: PersonProps) {
     } else if (p.pose === 'wave') {
       if (rFore.current) rFore.current.rotation.z = Math.sin(t * 5) * 0.35
     }
+    if (p.pose !== 'wave' && rFore.current && rFore.current.rotation.z !== 0) rFore.current.rotation.z = 0
   })
 
   const arm = (side: 1 | -1) => {
@@ -152,16 +156,22 @@ export function Person(p: PersonProps) {
       {/* legs */}
       {[-1, 1].map((s) => (
         <group key={s}>
-          <mesh geometry={g.leg} material={bottom} position={[s * 0.092, 0.47, 0]} castShadow={shadow} />
+          <mesh geometry={g.leg} material={bottom} position={[s * 0.092, 0.47, 0]} castShadow={shadow}>
+            <Hl />
+          </mesh>
           <mesh geometry={g.shoe} material={shoes} position={[s * 0.092, 0.035, 0.04]} castShadow={shadow} />
         </group>
       ))}
       {/* upper body pivots at the hips */}
       <group ref={upperBody} position={[0, 0.88, 0]} rotation={[lean, 0, 0]}>
-        <mesh geometry={g.torso} material={top} position={[0, 0.3, 0]} scale={[1.18, 1, 0.74]} castShadow={shadow} />
+        <mesh geometry={g.torso} material={top} position={[0, 0.3, 0]} scale={[1.18, 1, 0.74]} castShadow={shadow}>
+          <Hl />
+        </mesh>
         <mesh geometry={g.neck} material={skin} position={[0, 0.66, 0]} />
         <group ref={head} position={[0, 0.78, 0]} rotation={[headPitch, p.headYaw ?? 0, 0]}>
-          <mesh geometry={g.head} material={skin} scale={[1, 1.08, 1]} castShadow={shadow} />
+          <mesh geometry={g.head} material={skin} scale={[1, 1.08, 1]} castShadow={shadow}>
+            <Hl />
+          </mesh>
           {hs !== 'buzz' && <mesh geometry={g.hairCap} material={hair} position={[0, 0.012, -0.012]} rotation={[-0.25, 0, 0]} />}
           {hs === 'buzz' && <mesh geometry={g.hairCap} material={hair} position={[0, 0.004, -0.004]} scale={0.96} rotation={[-0.15, 0, 0]} />}
           {hs === 'long' && <mesh geometry={g.hairLong} material={hair} position={[0, -0.1, -0.06]} scale={[1.15, 1, 0.55]} />}
@@ -182,12 +192,12 @@ export function Person(p: PersonProps) {
         {p.backpack && <mesh geometry={g.pack} material={mat(p.backpack, { roughness: 0.75 })} position={[0, 0.34, -0.17]} castShadow={shadow} />}
         {p.lanyard && (
           <group position={[0, 0.38, 0.122]}>
-            <mesh geometry={g.strap} material={basic('#3FD0F0')} position={[-0.045, 0.12, 0]} rotation={[0, 0, -0.35]} />
-            <mesh geometry={g.strap} material={basic('#3FD0F0')} position={[0.045, 0.12, 0]} rotation={[0, 0, 0.35]} />
+            <mesh geometry={g.strap} material={basic(p.lanyardColor ?? '#3FD0F0')} position={[-0.045, 0.12, 0]} rotation={[0, 0, -0.35]} />
+            <mesh geometry={g.strap} material={basic(p.lanyardColor ?? '#3FD0F0')} position={[0.045, 0.12, 0]} rotation={[0, 0, 0.35]} />
             <mesh geometry={g.card} material={basic('#F7F9FC')} position={[0, -0.02, 0.004]} />
           </group>
         )}
-        {p.rep && <mesh geometry={g.patch} material={basic('#FFFFFF')} position={[0.075, 0.47, 0.121]} scale={[0.7, 0.45, 1]} />}
+        {p.rep && <mesh geometry={g.patch} material={basic(p.patchColor ?? '#FFFFFF')} position={[0.075, 0.47, 0.121]} scale={[0.7, 0.7, 1]} />}
       </group>
     </group>
   )

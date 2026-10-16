@@ -91,4 +91,12 @@ export const C = {
   wood: '#D9A86C',
   orange: '#E9935B',
   cream: '#FCF1E3',
+  // StudyQuest brand (from the app, brochure and roll-up)
+  sqOrange: '#E8935C',
+  sqOrangeLight: '#F0A675',
+  sqPeach: '#F2B48B',
+  sqCream: '#FFF6EC',
+  sqBrown: '#2B1D14',
+  sqPurple: '#5B3FC0',
+  sqGold: '#F2B33D',
 }

@@ -6,6 +6,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import type { Quality } from '../lib/store'
 import { Hl, Interactive } from './Interactive'
 import { Person } from './People'
+import { Team } from './Team'
 import { C, basic, geo, mat } from './shared'
 import { useImageTexture, usePanelTexture, useQrSignTexture } from './textures'
 
@@ -110,7 +111,7 @@ function Balloons() {
   const count = spots.length * (layers * 4 + 1)
   useLayoutEffect(() => {
     if (!ref.current) return
-    const cols = [C.royal, '#FFFFFF', C.cyan, C.royal]
+    const cols = [C.sqOrange, C.sqCream, C.sqPurple, C.sqGold]
     const mtx = new THREE.Matrix4()
     const col = new THREE.Color()
     let i = 0
@@ -125,7 +126,7 @@ function Balloons() {
       }
       mtx.compose(new THREE.Vector3(x, 0.25 + layers * 0.2 + 0.06, z), new THREE.Quaternion(), new THREE.Vector3(1.5, 1.5, 1.5))
       ref.current.setMatrixAt(i, mtx)
-      ref.current.setColorAt(i++, col.set(C.cyan))
+      ref.current.setColorAt(i++, col.set(C.sqOrange))
     }
     ref.current.instanceMatrix.needsUpdate = true
     if (ref.current.instanceColor) ref.current.instanceColor.needsUpdate = true
@@ -150,22 +151,23 @@ export function Booth({ quality, animate }: { quality: Quality; animate: boolean
   const frontTex = useImageTexture('assets/textures/tablefront.webp')
   const qrTex = useQrSignTexture()
   const alu = mat(C.aluminium, { roughness: 0.3, metalness: 0.8 })
-  const fabric = mat(C.royal, { roughness: 0.95 })
-  const fabricTop = mat('#2756E0', { roughness: 0.9 })
+  const fabric = mat(C.sqOrange, { roughness: 0.95 })
+  const fabricTop = mat(C.sqOrangeLight, { roughness: 0.9 })
+  const brochureTex = useImageTexture('assets/textures/brochure-cover.webp')
   const tableFrontZ = TABLE.z + TABLE.d / 2
 
   return (
     <group position={BOOTH}>
       {/* floor mat */}
-      <RoundedBox args={[4.4, 0.02, 3.4]} radius={0.008} position={[0, 0.01, 0]} receiveShadow material={mat('#1A3AA0', { roughness: 1 })} />
-      <mesh position={[0, 0.021, 1.69]} material={basic(C.cyan)}>
-        <boxGeometry args={[4.4, 0.002, 0.03]} />
+      <RoundedBox args={[4.4, 0.02, 3.4]} radius={0.008} position={[0, 0.01, 0]} receiveShadow material={mat('#3A271B', { roughness: 1 })} />
+      <mesh position={[0, 0.021, 1.665]} material={mat(C.sqOrange, { roughness: 0.9 })} receiveShadow>
+        <boxGeometry args={[4.4, 0.003, 0.07]} />
       </mesh>
 
       {/* -------- backdrop -------- */}
       <Interactive id="backdrop" marker={[3.3, 0.5]} markerAt={[0, 0.02, -1.45]}>
         <group position={[0, 0, -1.45]}>
-          <mesh position={[0, 1.27, -0.02]} material={mat('#F0F3F8', { roughness: 0.9 })} castShadow receiveShadow>
+          <mesh position={[0, 1.27, -0.02]} material={mat(C.sqCream, { roughness: 0.9 })} castShadow receiveShadow>
             <boxGeometry args={[3.04, 2.44, 0.03]} />
             <Hl />
           </mesh>
@@ -213,16 +215,28 @@ export function Booth({ quality, animate }: { quality: Quality; animate: boolean
           <planeGeometry args={[TABLE.w - 0.03, TABLE.h - 0.02]} />
           <meshStandardMaterial map={frontTex} roughness={0.95} />
         </mesh>
-        {/* brochure stack (the StudyQuest tri-fold) */}
-        {[0, 1, 2].map((i) => (
-          <mesh key={i} position={[-0.68 + i * 0.012, TOP + 0.006 + i * 0.008, TABLE.z + 0.2]} rotation={[0, 0.1 + i * 0.12, 0]} material={mat(i % 2 ? C.cream : C.orange, { roughness: 0.8 })} castShadow>
-            <boxGeometry args={[0.1, 0.008, 0.215]} />
-          </mesh>
-        ))}
         {/* water bottle */}
         <mesh position={[0.78, TOP + 0.1, TABLE.z - 0.22]} material={mat('#9FD6F2', { roughness: 0.1, transparent: true, opacity: 0.7 })} castShadow>
           <cylinderGeometry args={[0.032, 0.032, 0.2, 14]} />
         </mesh>
+      </Interactive>
+
+      {/* -------- brochures (the team's tri-fold, cover side up) -------- */}
+      <Interactive id="brochure" marker={[0.24, 0.32]} markerAt={[-0.58, TOP + 0.003, TABLE.z + 0.09]}>
+        <group position={[-0.58, TOP, TABLE.z + 0.09]}>
+          {[0, 1, 2, 3].map((i) => (
+            <group key={i} position={[i * 0.006, 0.004 + i * 0.006, i * -0.004]} rotation={[0, 0.12 - i * 0.07, 0]}>
+              <mesh material={mat(C.sqCream, { roughness: 0.8 })} castShadow receiveShadow>
+                <boxGeometry args={[0.093, 0.006, 0.216]} />
+                {i === 3 && <Hl />}
+              </mesh>
+              <mesh position={[0, 0.0031, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[0.093, 0.216]} />
+                <meshStandardMaterial map={brochureTex} roughness={0.6} />
+              </mesh>
+            </group>
+          ))}
+        </group>
       </Interactive>
 
       <Devices />
@@ -242,29 +256,29 @@ export function Booth({ quality, animate }: { quality: Quality; animate: boolean
               <boxGeometry args={[0.04, 0.02, 0.3]} />
             </mesh>
           ))}
-          <mesh position={[0, 1.07, -0.035]} material={alu}>
-            <cylinderGeometry args={[0.009, 0.009, 2.0, 6]} />
+          <mesh position={[0, 1.1, -0.035]} material={alu}>
+            <cylinderGeometry args={[0.009, 0.009, 2.03, 6]} />
           </mesh>
-          <mesh position={[0, 1.09, 0]} castShadow>
-            <boxGeometry args={[0.85, 2.0, 0.004]} />
+          {/* 33 × 80 in print */}
+          <mesh position={[0, 1.105, 0]} castShadow>
+            <boxGeometry args={[0.84, 2.03, 0.004]} />
             <meshStandardMaterial color="#F4F6FA" roughness={0.8} />
             <Hl />
           </mesh>
-          <mesh position={[0, 1.09, 0.0025]}>
-            <planeGeometry args={[0.85, 2.0]} />
+          <mesh position={[0, 1.105, 0.0025]}>
+            <planeGeometry args={[0.84, 2.03]} />
             <meshStandardMaterial map={rollupTex} roughness={0.6} />
           </mesh>
-          <mesh position={[0, 2.095, 0]} material={alu}>
-            <boxGeometry args={[0.87, 0.018, 0.02]} />
+          <mesh position={[0, 2.128, 0]} material={alu}>
+            <boxGeometry args={[0.86, 0.018, 0.02]} />
           </mesh>
         </group>
       </Interactive>
 
       {quality !== 'low' && <Balloons />}
 
-      {/* -------- booth representatives (behind the table) -------- */}
-      <Person position={[-0.45, 0.02, -0.55]} rotation={0.15} skin="#C68A62" hair="#1B1410" hairStyle="short" top={C.royal} bottom="#1E2230" pose="present" headYaw={-0.25} headPitch={0.18} lanyard rep animate={animate} phase={0.4} />
-      <Person position={[0.62, 0.02, -0.6]} rotation={-0.2} scale={0.96} skin="#E0B08A" hair="#2B1B12" hairStyle="ponytail" top={C.royal} bottom="#1E2230" pose="talk" headYaw={0.2} lanyard rep animate={animate} phase={1.7} />
+      {/* -------- the StudyQuest team (Jeremiah in the centre) -------- */}
+      <Team animate={animate} shadow={quality !== 'low'} />
     </group>
   )
 }

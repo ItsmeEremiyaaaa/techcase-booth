@@ -88,7 +88,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath()
 }
 
-/** A5/A3 portrait sign: header, QR generated from site.qrUrl, footer. */
+/** A5/A3 portrait sign in the StudyQuest style; the QR code is generated from site.qrUrl. */
 export function useQrSignTexture() {
   return useMemo(() => {
     const W = 600
@@ -100,29 +100,72 @@ export function useQrSignTexture() {
     t.colorSpace = THREE.SRGBColorSpace
     const draw = () => {
       const ctx = c.getContext('2d')!
-      ctx.fillStyle = '#1F4BD8'
+      const display = '"Fredoka Variable", "Nunito Variable", sans-serif'
+      // StudyQuest look: cream card, purple tag, brown title, orange scan brackets
+      ctx.fillStyle = '#FFF6EC'
       ctx.fillRect(0, 0, W, H)
-      ctx.fillStyle = '#0B1B4D'
-      ctx.fillRect(0, H - 120, W, 120)
-      ctx.fillStyle = '#3FD0F0'
-      ctx.fillRect(0, H - 130, W, 10)
-      ctx.fillStyle = '#ffffff'
-      ctx.textAlign = 'center'
-      ctx.font = '800 54px "Sora Variable", "Plus Jakarta Sans Variable", sans-serif'
-      ctx.fillText('Scan to play', W / 2, 104)
-      ctx.font = '800 64px "Sora Variable", "Plus Jakarta Sans Variable", sans-serif'
-      ctx.fillText(site.appName, W / 2, 178)
-      ctx.fillStyle = '#ffffff'
-      roundRect(ctx, 80, 220, W - 160, W - 160, 28)
+      ctx.fillStyle = '#E8935C'
+      ctx.beginPath()
+      ctx.arc(W - 40, 40, 170, 0, Math.PI * 2)
       ctx.fill()
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#5B3FC0'
+      roundRect(ctx, 150, 44, 300, 52, 26)
+      ctx.fill()
+      ctx.fillStyle = '#FFFFFF'
+      ctx.font = `700 26px ${display}`
+      ctx.fillText('START YOUR QUEST', W / 2, 80)
+      ctx.fillStyle = '#2B1D14'
+      ctx.font = `700 58px ${display}`
+      ctx.fillText('Scan to play', W / 2, 162)
+      ctx.fillStyle = '#FFFFFF'
+      roundRect(ctx, 90, 200, W - 180, W - 180, 34)
+      ctx.fill()
+      // orange corner brackets
+      ctx.strokeStyle = '#E8935C'
+      ctx.lineWidth = 12
+      ctx.lineCap = 'round'
+      const L = 70
+      const x0 = 110
+      const y0 = 220
+      const x1 = W - 110
+      const y1 = 200 + W - 180 - 20
+      for (const [x, y, dx, dy] of [
+        [x0, y0, 1, 1],
+        [x1, y0, -1, 1],
+        [x0, y1, 1, -1],
+        [x1, y1, -1, -1],
+      ]) {
+        ctx.beginPath()
+        ctx.moveTo(x, y + dy * L)
+        ctx.lineTo(x, y)
+        ctx.lineTo(x + dx * L, y)
+        ctx.stroke()
+      }
       const qr = document.createElement('canvas')
-      QRCode.toCanvas(qr, site.qrUrl, { margin: 1, width: W - 200, color: { dark: '#0B1B4D', light: '#ffffff' }, errorCorrectionLevel: 'M' }, () => {
-        ctx.drawImage(qr, 100, 240, W - 200, W - 200)
+      QRCode.toCanvas(qr, site.qrUrl, { margin: 1, width: W - 260, color: { dark: '#2B1D14', light: '#ffffff' }, errorCorrectionLevel: 'M' }, () => {
+        ctx.drawImage(qr, 130, 240, W - 260, W - 260)
         t.needsUpdate = true
       })
-      ctx.fillStyle = '#ffffff'
-      ctx.font = '700 30px "Plus Jakarta Sans Variable", sans-serif'
-      ctx.fillText(`${site.eventName} · ${site.eventTagline}`, W / 2, H - 50)
+      ctx.fillStyle = '#B4531E'
+      ctx.font = `700 34px ${display}`
+      ctx.fillText(site.qrUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''), W / 2, 668)
+      ctx.fillStyle = '#2B1D14'
+      ctx.fillRect(0, H - 120, W, 120)
+      ctx.font = `700 44px ${display}`
+      const parts: [string, string][] = [
+        ['Study. ', '#FFF6EC'],
+        ['Compete. ', '#F2B48B'],
+        ['Level Up.', '#F2B33D'],
+      ]
+      const total = parts.reduce((n, [txt]) => n + ctx.measureText(txt).width, 0)
+      let x = (W - total) / 2
+      ctx.textAlign = 'left'
+      for (const [txt, col] of parts) {
+        ctx.fillStyle = col
+        ctx.fillText(txt, x, H - 46)
+        x += ctx.measureText(txt).width
+      }
       t.needsUpdate = true
     }
     draw()

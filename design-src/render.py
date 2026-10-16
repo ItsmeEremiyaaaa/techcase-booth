@@ -26,7 +26,16 @@ with sync_playwright() as p:
     if not only or 'print' in only:
         pg = b.new_page(device_scale_factor=1, viewport={'width': 2600, 'height': 2000})
         pg.goto((SRC / 'print.html').as_uri()); pg.wait_for_timeout(600)
-        for sid in ['backdrop', 'rollup', 'tablefront', 'wallbanner', 'scoreboard']:
+        for sid in ['backdrop', 'tablefront', 'wallbanner', 'scoreboard']:
             save(pg.locator(f'#{sid}').screenshot(), OUT / 'textures' / f'{sid}.webp', q=88)
         pg.close()
     b.close()
+
+# The roll-up texture comes straight from the team's print PDF (needs poppler's pdftoppm).
+if not only or 'rollup' in only:
+    import subprocess, tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run(['pdftoppm', '-r', '24', '-png', '-singlefile', str(SRC / 'StudyQuest-Rollup-Banner-33x80.pdf'), f'{tmp}/rollup'], check=True)
+        im = Image.open(f'{tmp}/rollup.png').convert('RGB')
+        buf = io.BytesIO(); im.save(buf, 'PNG')
+        save(buf.getvalue(), OUT / 'textures' / 'rollup.webp', size=(720, round(720 * im.height / im.width)), q=88)

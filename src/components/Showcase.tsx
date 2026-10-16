@@ -1,11 +1,12 @@
 import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react'
-import { CircleHelp, Focus, Gauge, Hand, Info, Maximize, Minimize, Minus, MousePointerClick, Plus, RotateCcw, Tag, X } from 'lucide-react'
+import { CircleHelp, Focus, Gauge, Hand, Info, Maximize, Minimize, Minus, MousePointerClick, Plus, RotateCcw, Tag, Users, X } from 'lucide-react'
 import { asset, site } from '../config/site'
 import { boothObjects, objectOrder } from '../content/booth'
 import { hasWebGL } from '../lib/device'
-import { cameraApi, closePanels, effectiveQuality, openAbout, resetView, selectObject, store, useStore, type QualityMode, type ViewId } from '../lib/store'
+import { cameraApi, closePanels, effectiveQuality, openAbout, openTeam, resetView, selectObject, store, useStore, type QualityMode, type ViewId } from '../lib/store'
+import { teamById } from '../content/team'
 import { useReducedMotion } from '../hooks/useMedia'
-import { AboutPanel, InfoPanel } from './InfoPanel'
+import { AboutPanel, InfoPanel, MemberPanel, TeamPanel } from './InfoPanel'
 
 const Experience = lazy(() => import('../three/Experience'))
 
@@ -14,6 +15,7 @@ const VIEW_CHIPS: { id: ViewId; label: string }[] = [
   { id: 'table', label: 'Table' },
   { id: 'banner', label: 'Banner' },
   { id: 'devices', label: 'Devices' },
+  { id: 'team', label: 'Team' },
   { id: 'students', label: 'Visitors' },
   { id: 'court', label: 'Full court' },
 ]
@@ -63,7 +65,7 @@ function Intro({ show3d }: { show3d: boolean }) {
       <h1 id="intro-title">Welcome to the {site.eventName} Showcase</h1>
       <p id="intro-text">
         {show3d
-          ? `Step into the school gym and visit the ${site.appName} booth. Drag to look around, and tap a pin to inspect the table, banners and demo devices.`
+          ? `Step into the school gym and visit the ${site.appName} booth. Drag to look around, tap a pin to inspect the booth, and click the team to meet the developers.`
           : `Take a look at the ${site.appName} booth, open any part of it below, or read about the app.`}
       </p>
       <div className="intro-actions">
@@ -79,6 +81,9 @@ function Intro({ show3d }: { show3d: boolean }) {
         </button>
         <button type="button" className="btn btn-secondary" onClick={openAbout}>
           <Info size={18} aria-hidden="true" /> About {site.appName}
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={() => openTeam(show3d)}>
+          <Users size={18} aria-hidden="true" /> Meet the team
         </button>
       </div>
     </div>
@@ -119,6 +124,8 @@ export function Showcase() {
   const failed = useStore((s) => s.failed)
   const selected = useStore((s) => s.selected)
   const about = useStore((s) => s.about)
+  const teamOpen = useStore((s) => s.team)
+  const member = useStore((s) => s.member)
   const intro = useStore((s) => s.intro)
   const ready = useStore((s) => s.sceneReady)
   const qualityMode = useStore((s) => s.qualityMode)
@@ -128,7 +135,7 @@ export function Showcase() {
   const view = useStore((s) => s.view)
 
   const show3d = webgl && mode === '3d'
-  const panel = about || !!selected
+  const panel = about || teamOpen || !!member || !!selected
 
   useEffect(() => {
     const onFs = () => setFull(!!document.fullscreenElement)
@@ -146,7 +153,7 @@ export function Showcase() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (help) setHelp(false)
-        else if (store.get().selected || store.get().about) closePanels()
+        else if (store.get().selected || store.get().about || store.get().team || store.get().member) closePanels()
         else if (store.get().intro) store.set({ intro: false })
         return
       }
@@ -237,6 +244,16 @@ export function Showcase() {
             <img src={asset(site.logos.studyquest)} alt="" width={22} height={22} />
             <span>About {site.appName}</span>
           </button>
+          <button
+            type="button"
+            className={`btn btn-sm about-btn team-btn${teamOpen || member ? ' on' : ''}`}
+            aria-pressed={teamOpen || !!member}
+            aria-label="Meet the team"
+            onClick={() => (teamOpen || member ? closePanels() : openTeam(show3d))}
+          >
+            <Users size={20} aria-hidden="true" />
+            <span>Team</span>
+          </button>
           <button type="button" className="icon-btn" aria-pressed={help} aria-expanded={help} aria-controls="viewer-help" onClick={() => setHelp((h) => !h)} aria-label="How to move around">
             <CircleHelp size={20} />
           </button>
@@ -323,10 +340,20 @@ export function Showcase() {
       )}
 
       {about && <AboutPanel onClose={closePanels} />}
-      {!about && selected && <InfoPanel id={selected} onClose={closePanels} />}
+      {teamOpen && <TeamPanel onClose={closePanels} />}
+      {member && <MemberPanel id={member} onClose={closePanels} />}
+      {selected && <InfoPanel id={selected} onClose={closePanels} />}
 
       <p className="sr-only" aria-live="polite">
-        {about ? `Showing About ${site.appName}` : selected ? `Showing details for ${boothObjects[selected].title}` : ''}
+        {about
+          ? `Showing About ${site.appName}`
+          : teamOpen
+            ? 'Showing the team'
+            : member
+              ? `Showing ${teamById[member].name}, ${teamById[member].role}`
+              : selected
+                ? `Showing details for ${boothObjects[selected].title}`
+                : ''}
       </p>
     </div>
   )

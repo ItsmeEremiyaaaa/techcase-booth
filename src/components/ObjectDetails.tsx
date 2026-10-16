@@ -54,7 +54,7 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
         <div>
           <h3 className="h4">Design preview</h3>
           <a href={asset(o.image)} target="_blank" rel="noreferrer" aria-label={`Open the full-size ${o.title} design in a new tab`}>
-            <img className={`preview-img${id === 'banner' ? ' tall' : ''}`} src={asset(o.image)} alt={o.imageAlt ?? ''} loading="lazy" />
+            <img className={`preview-img${o.tall ? ' tall' : ''}`} src={asset(o.image)} alt={o.imageAlt ?? ''} loading="lazy" />
           </a>
         </div>
       )}
@@ -95,7 +95,7 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
 
       {o.steps && (
         <div>
-          <h3 className="h4">Visitor journey</h3>
+          <h3 className="h4">{id === 'brochure' ? 'Your quest in four steps' : 'Visitor journey'}</h3>
           <ol className="steps">
             {o.steps.map((s) => (
               <li key={s.title}>

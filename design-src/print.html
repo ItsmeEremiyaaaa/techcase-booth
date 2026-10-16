@@ -1,146 +1,140 @@
 <!doctype html>
 <!--
-  Print designs for the 3D booth textures (backdrop, roll-up, table front, wall banner, scoreboard).
-  The TechCase and StudyQuest marks used here are placeholders, not official logos.
-  Edit the copy below, then run: python3 design-src/render.py print
-  Pixel sizes match the real-world aspect ratios in src/content/booth.ts.
+  Print designs for the 3D booth textures.
+  - backdrop + tablefront: StudyQuest booth art, matched to the StudyQuest brochure and roll-up (Fredoka + Nunito, orange / cream / brown / purple)
+  - wallbanner + scoreboard: TechCase venue graphics (the TechCase mark is a placeholder)
+  The roll-up texture is rendered straight from the team's roll-up PDF, not from this file.
+  Render with: python3 design-src/render.py print
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <script src="./icons.js"></script>
 <style>
-@font-face { font-family: 'Jakarta'; src: url('../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2'); font-weight: 200 800; }
-@font-face { font-family: 'Sora'; src: url('../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2') format('woff2'); font-weight: 100 800; }
-:root { --blue: #1F4BD8; --blue2: #2A5BF0; --navy: #0B1B4D; --cyan: #3FD0F0; --soft: #EAF0FF; --orange: #E9935B; --cream: #FCF1E3; }
+@font-face { font-family: 'Fredoka'; src: url('../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2') format('woff2'); font-weight: 300 700; }
+@font-face { font-family: 'Nunito'; src: url('../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2') format('woff2'); font-weight: 200 1000; }
+:root {
+  --orange: #E8935C; --orange-2: #DF8148; --peach: #F2B48B; --cream: #FFF6EC; --brown: #2B1D14; --rust: #B4531E;
+  --purple: #5B3FC0; --purple-2: #7B5CE0; --gold: #F2B33D; --green: #2E7D57;
+  --blue: #1F4BD8; --navy: #0B1B4D; --cyan: #3FD0F0;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #333; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; font-family: 'Jakarta', sans-serif; }
-h1, h2, h3, .sora { font-family: 'Sora', sans-serif; letter-spacing: -0.03em; }
+body { background: #333; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; font-family: 'Nunito', sans-serif; }
+h1, h2, .fr { font-family: 'Fredoka', sans-serif; letter-spacing: -0.01em; }
 .row { display: flex; align-items: center; }
 .mark { display: block; }
-.phone { background: #0F1424; border-radius: 46px; padding: 12px; box-shadow: 0 30px 60px rgba(4, 12, 40, .45); }
-.phone img { display: block; border-radius: 36px; width: 100%; }
-.dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.13) 2px, transparent 2.5px); background-size: 34px 34px; }
+.phone { background: #1a120c; border-radius: 40px; padding: 10px; box-shadow: 0 26px 50px rgba(60, 25, 5, .35); }
+.phone img { display: block; border-radius: 31px; width: 100%; }
+.dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(180, 83, 30, .16) 2px, transparent 2.6px); background-size: 30px 30px; }
+.logo { display: flex; align-items: center; gap: 18px; }
+.logo b { font-family: 'Fredoka'; font-weight: 700; letter-spacing: -0.01em; color: var(--brown); line-height: 1; }
+.logo b span { color: var(--cream); }
+.pill { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; font-weight: 800; }
 
-/* BACKDROP 3.0 m x 2.4 m */
-#backdrop { width: 1600px; height: 1280px; background: var(--blue); position: relative; overflow: hidden; color: #fff; }
-#backdrop .orb { position: absolute; border-radius: 50%; }
-#backdrop .feat { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.18); border-radius: 22px; padding: 18px 22px; font-size: 27px; font-weight: 700; }
-#backdrop .feat i { width: 52px; height: 52px; border-radius: 15px; background: #fff; display: grid; place-items: center; flex: none; }
+/* ============ BACKDROP 3.0 m x 2.4 m ============ */
+#backdrop { width: 1600px; height: 1280px; background: var(--orange); position: relative; overflow: hidden; color: var(--brown); }
+#backdrop .blob { position: absolute; border-radius: 50%; }
+#backdrop .tile { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 24px; padding: 16px 20px; box-shadow: 0 4px 0 rgba(43, 29, 20, .08); }
+#backdrop .tile i { width: 58px; height: 58px; border-radius: 16px; display: grid; place-items: center; flex: none; }
+#backdrop .tile b { display: block; font-family: 'Fredoka'; font-size: 27px; font-weight: 700; line-height: 1.05; }
+#backdrop .tile small { display: block; font-size: 19px; font-weight: 700; color: #6b5444; margin-top: 3px; }
+.course { display: flex; flex-direction: column; align-items: center; gap: 8px; font-family: 'Fredoka'; font-weight: 700; font-size: 22px; }
+.course i { width: 66px; height: 66px; border-radius: 18px; display: grid; place-items: center; }
 
-/* ROLL-UP 0.85 m x 2.0 m */
-#rollup { width: 720px; height: 1694px; background: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-#rollup .li { display: flex; align-items: center; gap: 18px; font-size: 27px; font-weight: 700; color: #fff; }
-#rollup .li i { width: 54px; height: 54px; border-radius: 16px; background: rgba(255,255,255,.16); display: grid; place-items: center; flex: none; }
+/* ============ TABLE FRONT 1.83 m x 0.74 m ============ */
+#tablefront { width: 1440px; height: 608px; background: var(--orange); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-/* TABLE FRONT 1.8 m x 0.76 m */
-#tablefront { width: 1440px; height: 608px; background: var(--blue); position: relative; overflow: hidden; color: #fff; display: flex; align-items: center; justify-content: center; }
-
-/* WALL BANNER 6 m x 1.2 m */
+/* ============ VENUE: WALL BANNER + SCOREBOARD ============ */
 #wallbanner { width: 2400px; height: 480px; background: var(--navy); position: relative; overflow: hidden; color: #fff; display: flex; align-items: center; padding: 0 110px; gap: 50px; }
-
-/* SCOREBOARD FACE */
-#scoreboard { width: 800px; height: 400px; background: #0B0D12; color: #FFB02E; font-family: 'Sora'; position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; text-align: center; padding: 30px; }
-#scoreboard .lbl { font-size: 30px; color: #E8ECF5; font-weight: 700; letter-spacing: .14em; }
-#scoreboard .num { font-size: 120px; font-weight: 800; text-shadow: 0 0 18px rgba(255,170,40,.7); letter-spacing: .04em; }
+#scoreboard { width: 800px; height: 400px; background: #0B0D12; color: #FFB02E; font-family: 'Fredoka'; position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; text-align: center; padding: 30px; }
+#scoreboard .lbl { font-size: 30px; color: #E8ECF5; font-weight: 600; letter-spacing: .14em; }
+#scoreboard .num { font-size: 120px; font-weight: 700; text-shadow: 0 0 18px rgba(255,170,40,.7); letter-spacing: .04em; }
 </style>
 </head>
 <body>
 
-<!-- ============ BACKDROP ============ -->
+<!-- ======================= BACKDROP ======================= -->
 <section id="backdrop">
-  <div class="dots"></div>
-  <div class="orb" style="width:1100px;height:1100px;right:-330px;top:-150px;background:#2A5BF0"></div>
-  <div class="orb" style="width:760px;height:760px;right:-160px;top:180px;background:#3A6BFF"></div>
-  <div style="position:absolute;left:0;right:0;bottom:0;height:150px;background:var(--navy)"></div>
-  <div style="position:absolute;left:0;right:0;bottom:150px;height:12px;background:var(--cyan)"></div>
+  <div class="blob" style="width:900px;height:900px;left:-300px;top:-420px;background:var(--peach)"></div>
+  <div style="position:absolute;right:-260px;top:-120px;width:620px;height:1500px;background:var(--purple);transform:rotate(-24deg)"></div>
+  <div style="position:absolute;right:-300px;top:-160px;width:420px;height:1500px;background:var(--purple-2);transform:rotate(-24deg)"></div>
+  <!-- cream lower band (sits behind the table) -->
+  <div style="position:absolute;left:-100px;right:-100px;top:840px;bottom:-100px;background:var(--cream);border-radius:50% 50% 0 0 / 120px 120px 0 0"></div>
+  <div class="dots" style="top:860px"></div>
 
-  <!-- event brand -->
-  <div class="row" style="position:absolute;left:96px;top:84px;gap:22px">
-    <img class="mark" src="../public/assets/brand/techcase-mark-placeholder.svg" width="92" height="92" alt="">
-    <div><div class="sora" style="font-size:52px;font-weight:800;line-height:1">TechCase</div><div style="font-size:23px;font-weight:700;letter-spacing:.2em;opacity:.85;margin-top:8px">CAMPUS TECHNOLOGY SHOWCASE</div></div>
+  <!-- logo + tag -->
+  <div style="position:absolute;left:80px;top:70px">
+    <div class="logo"><img class="mark" src="../public/assets/brand/studyquest-mark.svg" width="96" height="96" alt=""><b style="font-size:92px">Study<span>Quest</span></b></div>
+    <div class="pill" style="margin-top:22px;background:var(--brown);color:var(--cream);font-size:24px;letter-spacing:.12em;padding:12px 24px">GAMIFIED QUIZ APP · SMCBI</div>
   </div>
 
-  <!-- product -->
-  <div style="position:absolute;left:96px;top:300px;width:820px">
-    <div style="display:inline-block;background:var(--cyan);color:var(--navy);font-weight:800;font-size:22px;letter-spacing:.16em;padding:10px 18px;border-radius:12px">FEATURING</div>
-    <div class="row" style="gap:26px;margin-top:26px">
-      <img class="mark" src="../public/assets/brand/studyquest-mark-placeholder.svg" width="108" height="108" alt="">
-      <h1 style="font-size:100px;font-weight:800;line-height:1">StudyQuest</h1>
-    </div>
-    <h2 style="font-size:60px;font-weight:700;line-height:1.08;margin-top:34px">Level up your<br>study game.</h2>
-    <p style="font-size:28px;font-weight:600;opacity:.9;margin-top:20px;line-height:1.4">A gamified quiz app for students: play quizzes, earn XP and climb the weekly league.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px;width:760px">
-      <div class="feat"><i><script>document.write(icon('list-checks',28,'#1F4BD8',2.4))</script></i>Daily quests</div>
-      <div class="feat"><i><script>document.write(icon('trophy',28,'#1F4BD8',2.4))</script></i>Weekly leagues</div>
-      <div class="feat"><i><script>document.write(icon('swords',28,'#1F4BD8',2.4))</script></i>Versus &amp; bosses</div>
-      <div class="feat"><i><script>document.write(icon('layers',28,'#1F4BD8',2.4))</script></i>Flashcard review</div>
-    </div>
+  <!-- headline -->
+  <div style="position:absolute;left:80px;top:268px;width:660px">
+    <h1 style="font-size:108px;font-weight:700;line-height:.98">Turn review time into a <span style="display:inline-block;background:var(--cream);color:var(--rust);border-radius:26px;padding:0 22px 8px">quest.</span></h1>
+    <p style="font-size:31px;font-weight:800;margin-top:18px;line-height:1.3;max-width:620px">Timed quizzes, real XP and weekly leagues for you and your classmates.</p>
   </div>
 
-  <!-- phones -->
-  <div class="phone" style="position:absolute;right:290px;top:260px;width:310px;transform:rotate(-6deg)"><img src="../public/assets/screens/quizzes.webp" alt=""></div>
-  <div class="phone" style="position:absolute;right:96px;top:200px;width:360px;transform:rotate(4deg)"><img src="../public/assets/screens/home.webp" alt=""></div>
+  <!-- mascot + phone -->
+  <img src="../public/assets/brand/studyquest-fox-card.webp" alt="" style="position:absolute;right:350px;top:120px;width:540px;border-radius:36px;border:8px solid var(--cream);box-shadow:0 24px 50px rgba(60,25,5,.28);transform:rotate(-2deg)">
+  <div class="phone" style="position:absolute;right:60px;top:330px;width:280px;transform:rotate(6deg)"><img src="../public/assets/screens/home.webp" alt=""></div>
 
-  <!-- footer -->
-  <div class="row" style="position:absolute;left:96px;right:96px;bottom:0;height:150px;justify-content:space-between">
-    <div class="row" style="gap:20px;font-size:34px;font-weight:800"><script>document.write(icon('scan-line',46,'#3FD0F0',2.4))</script>Scan the QR at our table to play</div>
-    <div style="font-size:26px;font-weight:700;opacity:.85">studyquest-a547c.web.app</div>
+  <!-- slogan bar -->
+  <div style="position:absolute;left:80px;top:732px;background:var(--brown);border-radius:28px;padding:16px 34px" class="fr">
+    <span style="font-size:46px;font-weight:700;color:var(--cream)">Study. </span><span style="font-size:46px;font-weight:700;color:var(--peach)">Compete. </span><span style="font-size:46px;font-weight:700;color:var(--gold)">Level Up.</span>
+  </div>
+
+  <!-- features + courses (lower band) -->
+  <div style="position:absolute;left:80px;right:80px;top:880px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="tile"><i style="background:#E5604F"><script>document.write(icon('timer',32,'#fff',2.4))</script></i><div><b>20-second rounds</b><small>Think fast, answer smart</small></div></div>
+    <div class="tile"><i style="background:#FFF1D6"><script>document.write(icon('award',32,'#E08A1E',2.4))</script></i><div><b>30 achievements</b><small>Badges with bonus XP</small></div></div>
+    <div class="tile"><i style="background:#FFF1D6"><script>document.write(icon('trophy',32,'#E08A1E',2.4))</script></i><div><b>Weekly leagues</b><small>Bronze to Diamond</small></div></div>
+    <div class="tile" style="background:#2A1E5C;color:#fff"><i style="background:#3D2D86"><script>document.write(icon('swords',32,'#7EE0B5',2.4))</script></i><div><b>Boss battles</b><small style="color:#CFC6F5">A new boss every week</small></div></div>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:1030px;display:flex;align-items:center;justify-content:space-between">
+    <div class="row" style="gap:26px">
+      <div class="fr" style="font-size:24px;font-weight:700;letter-spacing:.14em;color:var(--rust);width:150px;line-height:1.2">QUIZZES FOR</div>
+      <div class="course"><i style="background:#1BA2C4"><script>document.write(icon('book-open',34,'#fff',2.4))</script></i>BSED</div>
+      <div class="course"><i style="background:#E07B3A"><script>document.write(icon('briefcase',34,'#fff',2.4))</script></i>BSBA</div>
+      <div class="course"><i style="background:#2E8B57"><script>document.write(icon('pencil',34,'#fff',2.4))</script></i>BEED</div>
+      <div class="course"><i style="background:#3E74D6"><script>document.write(icon('monitor',34,'#fff',2.4))</script></i>BSIT</div>
+      <div class="course"><i style="background:#7B5CE0"><script>document.write(icon('calculator',34,'#fff',2.4))</script></i>Basic Ed</div>
+    </div>
+    <div style="text-align:right">
+      <div class="pill" style="background:var(--purple);color:#fff;font-size:22px;letter-spacing:.12em;padding:10px 20px">PLAY NOW</div>
+      <div class="fr" style="font-size:38px;font-weight:700;margin-top:10px">Scan the QR at our table</div>
+      <div style="font-size:26px;font-weight:900;color:var(--rust)">studyquest-a547c.web.app</div>
+    </div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:56px;background:var(--brown);color:var(--cream);display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:800">
+    <img src="../public/assets/brand/techcase-mark-placeholder.svg" width="34" height="34" alt="">TechCase Campus Technology Showcase · English &amp; Tagalog
   </div>
 </section>
 
-<!-- ============ ROLL-UP ============ -->
-<section id="rollup">
-  <div style="background:var(--navy);padding:44px 52px 40px;color:#fff" class="row">
-    <img class="mark" src="../public/assets/brand/techcase-mark-placeholder.svg" width="64" height="64" alt="">
-    <div style="margin-left:18px"><div class="sora" style="font-size:36px;font-weight:800;line-height:1">TechCase</div><div style="font-size:16px;font-weight:700;letter-spacing:.2em;opacity:.8;margin-top:6px">CAMPUS TECHNOLOGY SHOWCASE</div></div>
-  </div>
-  <div style="height:10px;background:var(--cyan)"></div>
-  <div style="padding:46px 52px 0;background:var(--soft);position:relative">
-    <div class="row" style="gap:20px">
-      <img class="mark" src="../public/assets/brand/studyquest-mark-placeholder.svg" width="96" height="96" alt="">
-      <h1 style="font-size:70px;font-weight:800;color:var(--navy);line-height:1">StudyQuest</h1>
-    </div>
-    <h2 style="font-size:56px;font-weight:800;color:var(--blue);line-height:1.06;margin-top:28px">Level up your study game.</h2>
-    <p style="font-size:26px;font-weight:600;color:#33406B;margin-top:18px;line-height:1.4">Quizzes, XP, leagues and achievements, built for students.</p>
-    <div class="phone" style="width:300px;margin:40px auto 0"><img src="../public/assets/screens/home.webp" alt=""></div>
-  </div>
-  <div style="flex:1;background:var(--blue);margin-top:-170px;padding:200px 56px 36px;display:flex;flex-direction:column;gap:18px;justify-content:center">
-    <div class="li"><i><script>document.write(icon('zap',28,'#fff',2.4))</script></i>Earn XP and level up</div>
-    <div class="li"><i><script>document.write(icon('trophy',28,'#fff',2.4))</script></i>Climb the weekly league</div>
-    <div class="li"><i><script>document.write(icon('swords',28,'#fff',2.4))</script></i>Versus &amp; boss fights</div>
-    <div class="li"><i><script>document.write(icon('award',28,'#fff',2.4))</script></i>30 achievements to unlock</div>
-  </div>
-  <div style="background:var(--navy);color:#fff;padding:36px 52px 44px;flex:none">
-    <div class="row" style="justify-content:space-between"><div class="sora" style="font-size:38px;font-weight:800;line-height:1.15">Play it now<br>at our table</div><div style="width:84px;height:84px;border-radius:50%;background:var(--cyan);display:grid;place-items:center"><script>document.write(icon('arrow-right',44,'#0B1B4D',2.6))</script></div></div>
-  </div>
-</section>
-
-<!-- ============ TABLE FRONT ============ -->
+<!-- ======================= TABLE FRONT ======================= -->
 <section id="tablefront">
-  <div class="dots" style="opacity:.6"></div>
-  <div style="position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--cyan)"></div>
-  <div class="row" style="gap:40px;position:relative">
-    <img class="mark" src="../public/assets/brand/studyquest-mark-placeholder.svg" width="190" height="190" alt="">
-    <div>
-      <h1 style="font-size:118px;font-weight:800;line-height:1">StudyQuest</h1>
-      <div class="row" style="gap:16px;margin-top:22px;font-size:38px;font-weight:700"><script>document.write(icon('smartphone',40,'#3FD0F0',2.4))</script>Play it here</div>
+  <div class="blob" style="position:absolute;width:520px;height:520px;border-radius:50%;left:-160px;top:-220px;background:var(--peach)"></div>
+  <div style="position:absolute;right:-120px;top:-60px;width:260px;height:900px;background:var(--purple);transform:rotate(-24deg)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:18px;background:var(--brown)"></div>
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:30px">
+    <div class="logo"><img class="mark" src="../public/assets/brand/studyquest-mark.svg" width="150" height="150" alt=""><b style="font-size:150px">Study<span>Quest</span></b></div>
+    <div class="fr" style="background:var(--brown);border-radius:24px;padding:14px 34px;font-size:46px;font-weight:700">
+      <span style="color:var(--cream)">Study. </span><span style="color:var(--peach)">Compete. </span><span style="color:var(--gold)">Level Up.</span>
     </div>
   </div>
 </section>
 
-<!-- ============ WALL BANNER ============ -->
+<!-- ======================= WALL BANNER (TechCase venue) ======================= -->
 <section id="wallbanner">
   <div style="position:absolute;left:0;top:0;bottom:0;width:36px;background:var(--cyan)"></div>
   <div style="position:absolute;right:0;top:0;bottom:0;width:36px;background:var(--cyan)"></div>
   <img class="mark" src="../public/assets/brand/techcase-mark-placeholder.svg" width="230" height="230" alt="">
   <div>
-    <div class="sora" style="font-size:180px;font-weight:800;line-height:.95">TechCase</div>
-    <div style="font-size:52px;font-weight:700;letter-spacing:.22em;opacity:.9;margin-top:20px">CAMPUS TECHNOLOGY SHOWCASE</div>
+    <div class="fr" style="font-size:180px;font-weight:700;line-height:.95">TechCase</div>
+    <div style="font-size:52px;font-weight:800;letter-spacing:.22em;opacity:.9;margin-top:20px">CAMPUS TECHNOLOGY SHOWCASE</div>
   </div>
 </section>
 
-<!-- ============ SCOREBOARD ============ -->
+<!-- ======================= SCOREBOARD ======================= -->
 <section id="scoreboard">
   <div><div class="lbl">HOME</div><div class="num">00</div></div>
   <div><div class="lbl" style="color:var(--cyan)">TECHCASE</div><div class="num" style="font-size:64px;color:#FF5A4A;text-shadow:0 0 14px rgba(255,80,60,.7)">12:00</div><div class="lbl" style="font-size:22px;margin-top:6px">SHOWCASE</div></div>

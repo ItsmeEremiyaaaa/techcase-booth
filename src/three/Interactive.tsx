@@ -6,8 +6,11 @@ import { selectObject, store, useStore } from '../lib/store'
 import type { ObjectId } from '../content/booth'
 import { geo } from './shared'
 
-type HlState = 'none' | 'hover' | 'selected'
+export type HlState = 'none' | 'hover' | 'selected'
 const HlCtx = createContext<HlState>('none')
+
+/** Lets any group (e.g. a team member) drive the <Hl /> outlines of the meshes inside it. */
+export const HighlightProvider = HlCtx.Provider
 
 interface Props {
   id: ObjectId
@@ -53,7 +56,7 @@ export function Hl() {
   const s = useContext(HlCtx)
   if (s === 'none') return null
   // drei's non-screenspace mode offsets in clip space, i.e. thickness is in pixels
-  return <Outlines thickness={s === 'selected' ? 3.5 : 2.5} color={s === 'selected' ? '#3FD0F0' : '#FFFFFF'} toneMapped={false} />
+  return <Outlines thickness={s === 'selected' ? 3.5 : 2.5} color={s === 'selected' ? '#7B5CE0' : '#FFFFFF'} toneMapped={false} />
 }
 
 export function useHl() {
@@ -84,7 +87,7 @@ function roundedRectOutline(w: number, d: number, r: number, t: number) {
   return g
 }
 
-function FloorMarker({ size, position, strong }: { size: [number, number]; position: [number, number, number]; strong: boolean }) {
+export function FloorMarker({ size, position, strong }: { size: [number, number]; position: [number, number, number]; strong: boolean }) {
   const g = useMemo(() => geo(`marker-${size.join('x')}`, () => roundedRectOutline(size[0], size[1], 0.18, 0.05)), [size])
   const fill = useMemo(() => geo(`marker-fill-${size.join('x')}`, () => new THREE.PlaneGeometry(size[0], size[1]).rotateX(-Math.PI / 2)), [size])
   const m = useRef<THREE.MeshBasicMaterial>(null)
@@ -97,10 +100,10 @@ function FloorMarker({ size, position, strong }: { size: [number, number]; posit
   return (
     <group position={[position[0], position[1] + 0.012, position[2]]} renderOrder={2}>
       <mesh geometry={g} raycast={() => null}>
-        <meshBasicMaterial ref={m} color="#3FD0F0" transparent depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial ref={m} color="#7B5CE0" transparent depthWrite={false} toneMapped={false} />
       </mesh>
       <mesh geometry={fill} raycast={() => null}>
-        <meshBasicMaterial ref={f} color="#3FD0F0" transparent depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial ref={f} color="#7B5CE0" transparent depthWrite={false} toneMapped={false} />
       </mesh>
     </group>
   )

@@ -1,11 +1,24 @@
 import { useSyncExternalStore } from 'react'
 import type { ObjectId } from '../content/booth'
+import type { MemberId } from '../content/team'
 import type { Units } from './units'
 import { detectQuality } from './device'
 
 export type Quality = 'high' | 'medium' | 'low'
 export type QualityMode = 'auto' | Quality
-export type ViewId = 'initial' | 'court' | 'booth' | 'table' | 'banner' | 'devices' | 'qr' | 'students' | 'backdrop'
+export type ViewId =
+  | 'initial'
+  | 'court'
+  | 'booth'
+  | 'table'
+  | 'banner'
+  | 'devices'
+  | 'qr'
+  | 'students'
+  | 'backdrop'
+  | 'brochure'
+  | 'team'
+  | `member-${MemberId}`
 
 export interface CameraApi {
   goTo: (view: ViewId, instant?: boolean) => void
@@ -14,18 +27,24 @@ export interface CameraApi {
 }
 
 interface State {
+  /** booth object whose panel is open */
   selected: ObjectId | null
   hovered: ObjectId | null
+  /** team member whose profile is open */
+  member: MemberId | null
+  hoveredMember: MemberId | null
+  /** the "Meet the team" panel */
+  team: boolean
+  /** the "About StudyQuest" panel */
+  about: boolean
+  /** the welcome card shown on first load */
+  intro: boolean
   qualityMode: QualityMode
   autoQuality: Quality
   labels: boolean
   sceneReady: boolean
   /** 3D vs. static image view (image is used when WebGL is missing or the scene fails) */
   mode: '3d' | 'image'
-  /** the "About StudyQuest" panel */
-  about: boolean
-  /** the welcome card shown on first load */
-  intro: boolean
   interacted: boolean
   units: Units
   view: ViewId | null
@@ -36,13 +55,16 @@ interface State {
 let state: State = {
   selected: null,
   hovered: null,
+  member: null,
+  hoveredMember: null,
+  team: false,
+  about: false,
+  intro: true,
   qualityMode: 'auto',
   autoQuality: typeof window !== 'undefined' ? detectQuality() : 'high',
   labels: true,
   sceneReady: false,
   mode: '3d',
-  about: false,
-  intro: true,
   interacted: false,
   units: 'metric',
   view: 'initial',
@@ -114,25 +136,38 @@ export const viewForObject: Record<ObjectId, ViewId> = {
   devices: 'devices',
   qr: 'qr',
   students: 'students',
+  brochure: 'brochure',
 }
 
+const NO_PANELS = { selected: null, member: null, team: false, about: false } as const
+
 export function selectObject(id: ObjectId | null, moveCamera = true) {
-  store.set({ selected: id, about: false, intro: false, interacted: true })
+  store.set({ ...NO_PANELS, selected: id, intro: false, interacted: true })
   if (id && moveCamera) cameraApi.goTo(viewForObject[id])
 }
 
+export function selectMember(id: MemberId, moveCamera = true) {
+  store.set({ ...NO_PANELS, member: id, intro: false, interacted: true })
+  if (moveCamera) cameraApi.goTo(`member-${id}`)
+}
+
+export function openTeam(moveCamera = true) {
+  store.set({ ...NO_PANELS, team: true, intro: false, interacted: true })
+  if (moveCamera) cameraApi.goTo('team')
+}
+
 export function openAbout() {
-  store.set({ about: true, selected: null, intro: false, interacted: true })
+  store.set({ ...NO_PANELS, about: true, intro: false, interacted: true })
   cameraApi.goTo('booth')
 }
 
 export function closePanels() {
-  store.set({ about: false, selected: null })
+  store.set({ ...NO_PANELS })
 }
 
 export function resetView() {
-  store.set({ selected: null, about: false, hovered: null })
+  store.set({ ...NO_PANELS, hovered: null, hoveredMember: null })
   cameraApi.goTo('initial')
 }
 
-export const panelOpen = () => !!(state.selected || state.about)
+export const panelOpen = () => !!(state.selected || state.about || state.member || state.team)

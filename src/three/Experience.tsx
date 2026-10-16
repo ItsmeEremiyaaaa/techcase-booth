@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { CameraControls, ContactShadows, Environment, Html, Lightformer, PerformanceMonitor, useProgress } from '@react-three/drei'
 import { Flag, Megaphone, QrCode, Smartphone, Table2, Users } from 'lucide-react'
 import { boothObjects, type ObjectId } from '../content/booth'
-import { registerCamera, selectObject, store, useStore, type Quality, type ViewId } from '../lib/store'
+import { panelOpen, registerCamera, selectObject, store, useStore, type Quality, type ViewId } from '../lib/store'
 import { Booth, EventDressing, Students } from './Booth'
 import { Court } from './Court'
 import { BleacherCrowd } from './People'
@@ -47,17 +47,17 @@ function Controls({ reducedMotion }: { reducedMotion: boolean }) {
     const applyOffset = (distance: number, instant?: boolean) => {
       const el = c.camera as THREE.PerspectiveCamera
       const k = Math.tan(THREE.MathUtils.degToRad(el.fov / 2)) * distance
-      if (!store.get().selected) return void c.setFocalOffset(0, 0, 0, animated(instant))
+      if (!panelOpen()) return void c.setFocalOffset(0, 0, 0, animated(instant))
       const dom = gl.domElement
       if (window.matchMedia('(max-width: 760px)').matches) void c.setFocalOffset(0, 0.5 * k, 0, animated(instant)) // camera-controls flips Y
       else void c.setFocalOffset(Math.min(0.36, 408 / Math.max(1, dom.clientHeight)) * k, 0, 0, animated(instant))
     }
-    let lastSelected = store.get().selected
+    let wasOpen = panelOpen()
     const unsub = store.subscribe(() => {
-      const sel = store.get().selected
-      if (sel === lastSelected) return
-      lastSelected = sel
-      if (!sel) void c.setFocalOffset(0, 0, 0, animated())
+      const open = panelOpen()
+      if (open === wasOpen) return
+      wasOpen = open
+      if (!open) void c.setFocalOffset(0, 0, 0, animated())
     })
     registerCamera({
       goTo(view: ViewId, instant?: boolean) {
@@ -67,7 +67,7 @@ function Controls({ reducedMotion }: { reducedMotion: boolean }) {
         const aspect = dom.clientWidth / Math.max(1, dom.clientHeight)
         const compact = window.matchMedia('(max-width: 760px)').matches
         let f = aspect < 1.2 ? 1 + (1.2 - aspect) * 0.75 : 1
-        if (compact && store.get().selected) f *= 1.45
+        if (compact && panelOpen()) f *= 1.45
         const pos = p.pos.map((v, i) => p.target[i] + (v - p.target[i]) * f) as [number, number, number]
         void c.setLookAt(...pos, ...p.target, animated(instant))
         applyOffset(Math.hypot(pos[0] - p.target[0], pos[1] - p.target[1], pos[2] - p.target[2]), instant)

@@ -45,14 +45,14 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
 
       {id === 'devices' && showPreview && (
         <div>
-          <h4>App preview</h4>
+          <h3 className="h4">App preview</h3>
           <AppPreview />
         </div>
       )}
 
       {o.image && showPreview && (
         <div>
-          <h4>Design preview</h4>
+          <h3 className="h4">Design preview</h3>
           <a href={asset(o.image)} target="_blank" rel="noreferrer" aria-label={`Open the full-size ${o.title} design in a new tab`}>
             <img className={`preview-img${id === 'banner' ? ' tall' : ''}`} src={asset(o.image)} alt={o.imageAlt ?? ''} loading="lazy" />
           </a>
@@ -68,14 +68,14 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
 
       {o.messages && (
         <div>
-          <h4>Key messages</h4>
+          <h3 className="h4">Key messages</h3>
           <List items={o.messages} />
         </div>
       )}
 
       {o.purpose && (
         <div>
-          <h4>Purpose</h4>
+          <h3 className="h4">Purpose</h3>
           <p>{o.purpose}</p>
         </div>
       )}
@@ -83,16 +83,19 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
       {id === 'qr' && (
         <div className="qr-box">
           <QrImage size={232} />
-          <p>
+          <div>
             <strong>{site.qrCaption}</strong>
-            {site.qrUrl}
-          </p>
+            <a className="btn btn-primary btn-sm" href={site.qrUrl} target="_blank" rel="noreferrer">
+              Open {site.appName}
+            </a>
+            <p>{site.qrUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
+          </div>
         </div>
       )}
 
       {o.steps && (
         <div>
-          <h4>Visitor journey</h4>
+          <h3 className="h4">Visitor journey</h3>
           <ol className="steps">
             {o.steps.map((s) => (
               <li key={s.title}>
@@ -107,27 +110,27 @@ export function ObjectDetails({ id, showSummary = true, showPreview = true }: { 
       )}
 
       <div>
-        <h4>{id === 'table' ? 'Dimensions' : 'Details'}</h4>
+        <h3 className="h4">{id === 'table' ? 'Dimensions' : 'Details'}</h3>
         <Specs specs={o.specs} />
       </div>
 
       {o.printFormat && (
         <div>
-          <h4>Recommended print format</h4>
+          <h3 className="h4">Recommended print format</h3>
           <List items={o.printFormat} />
         </div>
       )}
 
       {o.materials && (
         <div>
-          <h4>Proposed materials</h4>
+          <h3 className="h4">Proposed materials</h3>
           <List items={o.materials} />
         </div>
       )}
 
       {o.notes && (
         <div>
-          <h4>{id === 'table' ? 'Setup notes' : 'Notes'}</h4>
+          <h3 className="h4">{id === 'table' ? 'Setup notes' : 'Notes'}</h3>
           <List items={o.notes} />
         </div>
       )}

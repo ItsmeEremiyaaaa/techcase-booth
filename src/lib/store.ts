@@ -20,10 +20,12 @@ interface State {
   autoQuality: Quality
   labels: boolean
   sceneReady: boolean
-  /** 3D vs. static image view of the experience */
+  /** 3D vs. static image view (image is used when WebGL is missing or the scene fails) */
   mode: '3d' | 'image'
-  /** Touch devices must tap to start interacting so the page can still scroll. */
-  touchActive: boolean
+  /** the "About StudyQuest" panel */
+  about: boolean
+  /** the welcome card shown on first load */
+  intro: boolean
   interacted: boolean
   units: Units
   view: ViewId | null
@@ -39,7 +41,8 @@ let state: State = {
   labels: true,
   sceneReady: false,
   mode: '3d',
-  touchActive: false,
+  about: false,
+  intro: true,
   interacted: false,
   units: 'metric',
   view: 'initial',
@@ -114,11 +117,22 @@ export const viewForObject: Record<ObjectId, ViewId> = {
 }
 
 export function selectObject(id: ObjectId | null, moveCamera = true) {
-  store.set({ selected: id, interacted: true })
+  store.set({ selected: id, about: false, intro: false, interacted: true })
   if (id && moveCamera) cameraApi.goTo(viewForObject[id])
 }
 
+export function openAbout() {
+  store.set({ about: true, selected: null, intro: false, interacted: true })
+  cameraApi.goTo('booth')
+}
+
+export function closePanels() {
+  store.set({ about: false, selected: null })
+}
+
 export function resetView() {
-  store.set({ selected: null, hovered: null })
+  store.set({ selected: null, about: false, hovered: null })
   cameraApi.goTo('initial')
 }
+
+export const panelOpen = () => !!(state.selected || state.about)

@@ -109,7 +109,7 @@ export function useQrSignTexture() {
       ctx.fillStyle = '#ffffff'
       ctx.textAlign = 'center'
       ctx.font = '800 54px "Sora Variable", "Plus Jakarta Sans Variable", sans-serif'
-      ctx.fillText('Scan to try', W / 2, 104)
+      ctx.fillText('Scan to play', W / 2, 104)
       ctx.font = '800 64px "Sora Variable", "Plus Jakarta Sans Variable", sans-serif'
       ctx.fillText(site.appName, W / 2, 178)
       ctx.fillStyle = '#ffffff'

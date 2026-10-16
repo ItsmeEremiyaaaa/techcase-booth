@@ -1,15 +1,13 @@
 /**
- * All booth copy lives here so it can be edited without touching components.
- * Dimensions are in metres. Anything with `estimate: true` is a planning estimate —
- * confirm with the TechCase organizers and your print shop before ordering.
- * No supplier prices are listed on purpose: get local quotes.
+ * All showcase copy lives here so it can be edited without touching components.
+ * Dimensions are in metres. Anything with `estimate: true` is a planning estimate.
  */
 
 export type ObjectId = 'table' | 'backdrop' | 'banner' | 'devices' | 'qr' | 'students'
 
 export interface Spec {
   label: string
-  /** metres; formatted by the unit toggle */
+  /** metres */
   value?: number[]
   text?: string
   estimate?: boolean
@@ -39,24 +37,17 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     kicker: 'Booth & table',
     title: 'Demo table',
     summary:
-      'A standard folding table with a fitted royal-blue cover. It holds the demo phones and tablet, two QR stands and a stack of StudyQuest brochures.',
+      'A folding table with a fitted royal-blue cover. It holds the demo phones and tablet running StudyQuest, two QR stands and a stack of StudyQuest brochures.',
     specs: [
       { label: 'Table (W × D)', value: [1.83, 0.76], estimate: true },
       { label: 'Table height', value: [0.74], estimate: true },
       { label: 'Booth footprint (W × D)', value: [4.4, 3.4], estimate: true },
-      { label: 'Visitor clearance in front', value: [1.0], estimate: true },
     ],
     materials: [
-      'Fitted stretch polyester table cover in royal blue with a printed front panel',
-      'Optional blue floor mat or carpet tiles under the booth (check gym floor rules)',
-      'Acrylic phone and tablet stands, one per device',
-      'Extension cord, cable ties and a power bank for each device',
-    ],
-    notes: [
-      'Protect the court: felt pads under the table legs and no tape residue on the wood floor.',
-      'Keep the front edge clear so two or three visitors can stand at the table at once.',
-      'Charge every device the night before and keep cables tucked under the cover.',
-      'Pin the StudyQuest app on demo devices (Android screen pinning) so visitors stay in the demo.',
+      'Fitted royal-blue table cover with a printed StudyQuest front panel',
+      'Blue floor mat under the booth',
+      'Acrylic stands for the phones and the tablet',
+      'Extension cord and power banks to keep the demo devices charged',
     ],
   },
   backdrop: {
@@ -64,22 +55,17 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     kicker: 'Main backdrop',
     title: 'Promotional backdrop',
     summary:
-      'The large wall behind the table. It carries the TechCase event branding and introduces StudyQuest with its headline and four core features.',
+      'The large wall behind the table. It carries the TechCase event branding and introduces StudyQuest with real screens from the app.',
     headline: 'StudyQuest — Level up your study game.',
-    tagline: 'A gamified quiz app for students — answer, earn XP and keep your streak alive.',
-    messages: ['Category quizzes', 'XP & levels', 'Daily streaks', 'Leaderboards', 'Scan the QR at our table to try the beta'],
+    tagline: 'A gamified quiz app for students: play quizzes, earn XP and climb the weekly league.',
+    messages: ['Daily quests', 'Weekly leagues', 'Versus & boss fights', 'Flashcard review', 'Scan the QR at our table to play'],
     purpose: 'Makes the booth recognizable from across the court and frames the demo for photos.',
     specs: [
       { label: 'Printed area (W × H)', value: [3.0, 2.4], estimate: true },
       { label: 'Viewing distance', text: '5–15 m across the court' },
     ],
-    printFormat: [
-      'Tarpaulin or dye-sublimated fabric on a pop-up or aluminium frame',
-      'Design at full size, 100–150 dpi, CMYK; add the bleed your print shop asks for',
-      'Keep text and logos away from frame edges and the table line (lower ~0.8 m is hidden)',
-    ],
     image: 'assets/textures/backdrop.webp',
-    imageAlt: 'Backdrop design: TechCase branding, StudyQuest headline, four feature tiles and two phones showing the app.',
+    imageAlt: 'Backdrop design: TechCase branding, the StudyQuest headline, four feature tiles and two phones showing the app.',
   },
   banner: {
     id: 'banner',
@@ -87,110 +73,119 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     title: 'Roll-up banner',
     summary: 'A tall pull-up standee at the aisle edge of the booth that catches students walking past.',
     headline: 'Level up your study game.',
-    tagline: 'Quizzes, XP, streaks and badges — built for students.',
-    messages: ['Earn XP and level up', 'Keep your daily streak', 'Collect badges', 'English & Tagalog', 'Try the beta at our table'],
-    purpose:
-      'Pulls foot traffic from the aisle toward the table. The headline sits at eye level; the lower panel lists features and the call to action.',
+    tagline: 'Quizzes, XP, leagues and achievements, built for students.',
+    messages: ['Earn XP and level up', 'Climb the weekly league', 'Versus & boss fights', '30 achievements to unlock', 'Play it now at our table'],
+    purpose: 'Pulls foot traffic from the aisle toward the table. The headline sits at eye level; the lower panel lists features and the call to action.',
     specs: [
       { label: 'Banner (W × H)', value: [0.85, 2.0], estimate: true },
       { label: 'Readable from', text: '3–6 m' },
     ],
-    printFormat: [
-      'Standard roll-up stand with cassette base (common 85 × 200 cm size — confirm)',
-      'Polyester film or tarpaulin; 150 dpi at full size, CMYK',
-      'Leave extra length at the bottom for the cassette, as specified by the printer',
-    ],
     image: 'assets/textures/rollup.webp',
-    imageAlt: 'Roll-up banner design: TechCase header, StudyQuest logo, headline, phone mockup, feature list and a call to action.',
+    imageAlt: 'Roll-up banner design: TechCase header, StudyQuest logo, headline, the app home screen, a feature list and a call to action.',
   },
   devices: {
     id: 'devices',
     kicker: 'Device demo area',
     title: 'Phones & tablet',
     summary:
-      'Two phones and a tablet on stands run the StudyQuest beta so visitors can play right away. Booth reps guide first-time players.',
+      'Two phones and a tablet on stands run StudyQuest so visitors can play right away. Booth reps guide first-time players through a quiz.',
     specs: [
-      { label: 'Demo devices', text: '2 Android phones + 1 tablet' },
-      { label: 'Session length', text: 'One quiz or the daily challenge' },
-    ],
-    notes: [
-      'Use a shared demo account so visitors see XP, streaks and badges in action.',
-      'Set brightness to maximum and disable auto-lock during the event.',
-      'Have the APK ready to share for students who want to install the beta.',
+      { label: 'Demo devices', text: '2 phones + 1 tablet' },
+      { label: 'Try it', text: 'Daily challenge or one subject quiz' },
     ],
   },
   qr: {
     id: 'qr',
     kicker: 'QR stands',
     title: 'QR code stands',
-    summary:
-      'Two acrylic table stands and a floor sign link straight to StudyQuest. The QR code is generated from the link in the site config, so it is easy to change.',
+    summary: 'Two table stands and a floor sign open StudyQuest on the visitor’s own phone, so they can keep playing after they leave the booth.',
     specs: [
-      { label: 'Table stands', text: 'A5 acrylic sign holder (148 × 210 mm)' },
+      { label: 'Table stands', text: 'A5 acrylic sign holders' },
       { label: 'Floor sign', text: 'A3 poster on a pedestal stand' },
-      { label: 'Minimum QR size', text: '3 cm for arm’s-length scanning' },
-    ],
-    notes: [
-      'Test-scan every printed QR with Android and iPhone cameras before the event.',
-      'Print a short URL under each code for students whose camera will not scan.',
     ],
   },
   students: {
     id: 'students',
-    kicker: 'Student engagement area',
+    kicker: 'Visitor area',
     title: 'How students try StudyQuest',
-    summary:
-      'The open space in front of the table, inside the court’s centre circle, is where visitors gather, scan and play.',
+    summary: 'The open space in front of the table, inside the court’s centre circle, is where visitors gather, scan and play.',
     steps: [
       { title: 'Discover', body: 'Students spot the backdrop and roll-up from the aisle, and a booth rep invites them over.' },
-      { title: 'Scan', body: 'They scan the QR code on a table stand or the floor sign to open the StudyQuest link.' },
-      { title: 'Try', body: 'They play a quick quiz or the daily challenge on a demo phone and see their XP and streak update.' },
-      { title: 'Share feedback', body: 'Before leaving, they can send feedback through the StudyQuest feedback page.' },
+      { title: 'Scan', body: 'They scan the QR code on a table stand or the floor sign to open StudyQuest on their phone.' },
+      { title: 'Play', body: 'They try the daily challenge or a subject quiz on a demo device and watch their XP and level go up.' },
+      { title: 'Compete', body: 'They join the weekly league and leaderboards, and come back for daily quests and the boss of the week.' },
     ],
-    specs: [
-      { label: 'Booth reps', text: '2 — one demos, one helps with scanning and installs' },
-      { label: 'Visitors at once', text: '4–6 comfortably', estimate: true },
-    ],
+    specs: [{ label: 'Booth reps', text: '2 — one demos, one helps visitors scan and sign in' }],
   },
 }
 
 export const objectOrder: ObjectId[] = ['table', 'backdrop', 'banner', 'devices', 'qr', 'students']
 
-/** App preview screens (PLACEHOLDER mockups — replace the files with real screenshots). */
+/** Real StudyQuest screenshots (public/assets/screens). Replace the files to update them. */
 export const appScreens = [
-  { id: 'home', src: 'assets/screens/home.webp', title: 'Home', caption: 'Greeting, streak, level and XP, the daily challenge, a week calendar and quiz categories.' },
-  { id: 'quiz', src: 'assets/screens/quiz.webp', title: 'Quiz', caption: 'Each question has a 20-second countdown.' },
-  { id: 'results', src: 'assets/screens/results.webp', title: 'Results', caption: 'Score, accuracy and XP — awarded on the first clear of each quiz — plus unlocked badges.' },
-  { id: 'leaderboard', src: 'assets/screens/leaderboard.webp', title: 'Leaderboard', caption: 'Global, friends and per-quiz rankings.' },
-  { id: 'profile', src: 'assets/screens/profile.webp', title: 'Profile', caption: 'Badge collection (32 in total) and the English / Tagalog language setting.' },
+  { id: 'home', src: 'assets/screens/home.webp', title: 'Home', caption: 'Level and XP, coins, streak and league, the daily challenge, quick actions and the Mystery quiz of the day.' },
+  { id: 'home-more', src: 'assets/screens/home-more.webp', title: 'Bosses', caption: 'The weekly boss fight, your subjects, course results, your section, teacher mode and friends.' },
+  { id: 'quizzes', src: 'assets/screens/quizzes.webp', title: 'Quizzes', caption: 'Subject quizzes by difficulty, mastery stars, Survival mode and Write a question.' },
+  { id: 'league', src: 'assets/screens/league.webp', title: 'League', caption: 'Weekly Bronze, Silver, Gold and Diamond leagues: the top 5 move up, the bottom 5 move down.' },
+  { id: 'subjects', src: 'assets/screens/subjects.webp', title: 'Subjects', caption: 'Weekly subject boards: the top 4 earn a Diamond, Gold, Silver or Copper title.' },
+  { id: 'achievements', src: 'assets/screens/achievements.webp', title: 'Achievements', caption: '30 achievements, each with bonus XP.' },
+  { id: 'profile', src: 'assets/screens/profile.webp', title: 'Profile', caption: 'Level progress, XP, streak, titles, section and badges.' },
 ] as const
 
-export const tabletScreen = { src: 'assets/screens/tablet-home.webp', title: 'Tablet', caption: 'The home dashboard on a tablet (sample layout).' }
+export const tabletScreen = { src: 'assets/screens/tablet.webp', title: 'Tablet', caption: 'Home and the weekly league side by side on the demo tablet.' }
 
-/** Rows for the Materials & implementation table. */
-export interface MaterialRow {
-  item: string
-  material: string
-  size?: number[]
-  sizeText?: string
-  print: string
-  notes: string
-}
-
-export const materials: MaterialRow[] = [
-  { item: 'Main backdrop', material: 'Tarpaulin or fabric on pop-up / aluminium frame', size: [3.0, 2.4], print: 'Full-size artwork, 100–150 dpi, CMYK', notes: 'Bottom ~0.8 m hidden by the table' },
-  { item: 'Roll-up banner', material: 'Polyester film or tarpaulin, cassette stand', size: [0.85, 2.0], print: 'Full-size artwork, 150 dpi, CMYK', notes: 'Extra bottom length for the cassette' },
-  { item: 'Table cover', material: 'Fitted stretch polyester, printed front', size: [1.83, 0.76], print: 'Dye-sublimation or heat-transfer logo', notes: 'Royal blue to match the backdrop' },
-  { item: 'QR table stands (×2)', material: 'Acrylic A5 sign holders', sizeText: '148 × 210 mm', print: 'Glossy photo paper or cardstock', notes: 'Test-scan before printing in bulk' },
-  { item: 'QR floor sign', material: 'A3 poster on a pedestal stand', sizeText: '297 × 420 mm', print: 'Matte to avoid gym-light glare', notes: 'Place at the aisle side' },
-  { item: 'Floor mat (optional)', material: 'Carpet tiles or rubber mat', size: [4.4, 3.4], print: '—', notes: 'Ask if mats are allowed on the court' },
-  { item: 'Brochures', material: 'StudyQuest tri-fold brochure', sizeText: 'Letter, landscape', print: 'Double-sided, 2 folds', notes: 'Stack at the table corner' },
-]
-
-export const construction = [
-  'Confirm the booth slot size, power outlets and setup time with the TechCase organizers.',
-  'Protect the court: rubber feet on stands, no tape on the wood finish, and nothing dragged across the floor.',
-  'Weigh down the roll-up and floor sign bases — gym doors and fans create drafts.',
-  'Route extension cords along the back edge of the booth and cover them with a cable mat.',
-  'Do a full dry run: devices charged, demo account signed in, QR codes test-scanned.',
-]
+/** "About StudyQuest" panel content. Every item is visible in the live app. */
+export const appInfo = {
+  tagline: 'Level up your study game.',
+  intro:
+    'StudyQuest turns reviewing into a game. Students play subject quizzes, earn XP and coins, keep streaks, and compete in weekly leagues with classmates.',
+  groups: [
+    {
+      title: 'Play and learn',
+      icon: 'book',
+      items: [
+        'Subject quizzes (Cybersecurity, Networking Basics, Programming and more) with Easy, Medium and Hard filters',
+        'Quiz of the day: a Mystery quiz in sudden-death mode, where one miss ends it',
+        'Survival mode: 3 lives, endless questions',
+        'Mastery stars: ★ finish, ★★ score 90%+, ★★★ perfect in under 10 seconds a question',
+        'Flashcard review with cards due each day, plus your own decks',
+      ],
+    },
+    {
+      title: 'Daily motivation',
+      icon: 'flame',
+      items: [
+        'A daily challenge with bonus XP',
+        'Daily quests that pay coins, and a mystery chest for finishing them all',
+        'Levels, XP, coins and streaks on the home screen',
+        'A shop and a study planner',
+      ],
+    },
+    {
+      title: 'Compete together',
+      icon: 'trophy',
+      items: [
+        'Weekly leagues (Bronze, Silver, Gold and Diamond), where the top 5 move up and the bottom 5 move down',
+        'Leaderboards: Overall, Subjects, Friends and Versus',
+        'Weekly subject titles for the top 4 in each subject',
+        'Versus matches, a rival of the week and a weekly boss fight',
+        'Course vs course results every week',
+      ],
+    },
+    {
+      title: 'Grow and get recognized',
+      icon: 'award',
+      items: ['30 achievements with bonus XP', 'Badges and profile titles such as “Programming Student”'],
+    },
+    {
+      title: 'Built for classes',
+      icon: 'users',
+      items: [
+        'My section: questionnaires from your teachers',
+        'Teacher mode for managing sections and questionnaires',
+        'Write a question: students can add their own questions to the app',
+      ],
+    },
+  ],
+  builtWith: 'Built with React Native (Expo) and Firebase by a six-person BSIT capstone team.',
+} as const

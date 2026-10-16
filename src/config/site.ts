@@ -7,12 +7,9 @@ export const site = {
   eventTagline: 'Campus Technology Showcase',
   appName: 'StudyQuest',
 
-  /**
-   * PLACEHOLDER — the link encoded in every QR code (3D stands, info panel, design cards).
-   * Point it at the StudyQuest beta download page, APK link or feedback form.
-   */
-  qrUrl: 'https://itsmeeremiyaaaa.github.io/techcase-booth/',
-  qrCaption: 'Scan to try StudyQuest',
+  /** The live StudyQuest web app: used by every QR code and the "Play StudyQuest" buttons. */
+  qrUrl: 'https://studyquest-a547c.web.app/',
+  qrCaption: 'Scan to play StudyQuest',
 
   repoUrl: 'https://github.com/ItsmeEremiyaaaa/techcase-booth',
 
@@ -22,7 +19,7 @@ export const site = {
     studyquest: 'assets/brand/studyquest-mark-placeholder.svg',
   },
 
-  /** Static image used in the hero and when 3D is unavailable. Re-render it if the scene changes. */
+  /** Still render shown when 3D is unavailable. Re-render it if the scene changes a lot. */
   sceneStill: 'assets/fallback/booth-overview.webp',
 } as const
 

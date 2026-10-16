@@ -5,7 +5,7 @@ import { appScreens, tabletScreen } from '../content/booth'
 
 const SCREENS = [...appScreens.map((s) => ({ ...s, tablet: false })), { id: 'tablet', ...tabletScreen, tablet: true }]
 
-/** Browsable StudyQuest screens (placeholder mockups until real screenshots are supplied). */
+/** Browsable StudyQuest screenshots. */
 export function AppPreview({ initial = 0 }: { initial?: number }) {
   const [i, setI] = useState(initial)
   const startX = useRef<number | null>(null)
@@ -44,7 +44,7 @@ export function AppPreview({ initial = 0 }: { initial?: number }) {
           <ChevronLeft size={20} />
         </button>
         <div className={`device${s.tablet ? ' tablet' : ''}`}>
-          <img src={asset(s.src)} alt={`StudyQuest ${s.title} screen (sample): ${s.caption}`} width={s.tablet ? 768 : 540} height={s.tablet ? 1024 : 1170} draggable={false} />
+          <img src={asset(s.src)} alt={`StudyQuest ${s.title} screen: ${s.caption}`} width={s.tablet ? 768 : 374} height={s.tablet ? 1024 : 810} draggable={false} />
         </div>
         <button type="button" className="icon-btn" onClick={() => go(1)} aria-label="Next screen">
           <ChevronRight size={20} />
@@ -57,8 +57,6 @@ export function AppPreview({ initial = 0 }: { initial?: number }) {
         <br />
         {s.caption}
       </p>
-      {/* To show real screenshots, replace the files in public/assets/screens/ (same names) and update this note. */}
-      <p className="sample-note">Sample screens based on StudyQuest’s features. The live app may look different.</p>
     </div>
   )
 }

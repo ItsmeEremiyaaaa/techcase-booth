@@ -43,8 +43,8 @@ function DeviceOnStand({ size, screen, position, rotation = 0, tilt = 0.32 }: { 
 
 function Devices() {
   const home = useImageTexture('assets/screens/home.webp')
-  const quiz = useImageTexture('assets/screens/quiz.webp')
-  const tablet = useImageTexture('assets/screens/tablet-home.webp')
+  const quiz = useImageTexture('assets/screens/quizzes.webp')
+  const tablet = useImageTexture('assets/screens/tablet.webp')
   return (
     <Interactive id="devices" marker={[1.5, 0.5]} markerAt={[0, TOP + 0.002, TABLE.z - 0.05]}>
       <DeviceOnStand size={[0.19, 0.255]} screen={tablet} position={[0, TOP, TABLE.z - 0.05]} tilt={0.3} />

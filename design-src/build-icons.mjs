@@ -1,6 +1,6 @@
 // Extracts a few Lucide icons (ISC license) into a plain JS map for the texture templates.
 import { writeFileSync } from 'node:fs'
-const names = ['flame','zap','trophy','award','book-open','calculator','flask-conical','globe','languages','house','list-checks','user','users','timer','star','qr-code','scan-line','smartphone','arrow-right','check','x','crown','target','calendar','bell','chevron-right','sparkles','medal','shield-check','brain','landmark','gamepad-2','lock']
+const names = ['flame','zap','trophy','award','book-open','calculator','flask-conical','globe','languages','house','list-checks','user','users','timer','star','qr-code','scan-line','smartphone','arrow-right','check','x','crown','target','calendar','bell','chevron-right','sparkles','medal','shield-check','brain','landmark','gamepad-2','lock','swords','layers','gift','shield','globe']
 const out = {}
 for (const n of names) {
   const mod = await import(new URL(`../node_modules/lucide-react/dist/esm/icons/${n}.mjs`, import.meta.url).href)

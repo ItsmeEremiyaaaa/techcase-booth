@@ -1,0 +1,7 @@
+<!-- PLACEHOLDER MARK — not the official StudyQuest logo. Replace with the real app icon. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#E9935B"/>
+  <path d="M32 22c-3-2.5-7-3.5-13-3.5v24c6 0 10 1 13 3.5 3-2.5 7-3.5 13-3.5v-24c-6 0-10 1-13 3.5Z" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M32 22v24" stroke="#fff" stroke-width="3.2"/>
+  <path d="m47 9 1.6 3.4 3.7.5-2.7 2.6.7 3.7L47 17.4l-3.3 1.8.7-3.7-2.7-2.6 3.7-.5Z" fill="#FFF4E6"/>
+</svg>

@@ -383,10 +383,11 @@ function Walker({ def, shadow, bubbles }: { def: WalkerDef; shadow: boolean; bub
       }
     }
 
-    // speech bubbles fade out when the camera is far away
+    // speech bubbles fade out when the camera is far away, or so close the visitor is hidden
     const el = bubbleEl.current
     if (el) {
-      const far = Math.hypot(camera.position.x - r.x, camera.position.z - r.z) > 15
+      const flat = Math.hypot(camera.position.x - r.x, camera.position.z - r.z)
+      const far = flat > 15 || Math.hypot(flat, Math.max(0, camera.position.y - 1.75)) < 1.1
       if (el.classList.contains('far') !== far) el.classList.toggle('far', far)
     }
   })

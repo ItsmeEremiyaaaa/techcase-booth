@@ -25,7 +25,8 @@ function memberView(id: MemberId): { pos: V3; target: V3; label: string } {
   const s = TEAM_SPOTS[id]
   const gx = s.x
   const gz = s.z + BZ
-  return { pos: [gx * 0.5 + (id === 'joemar' ? -0.2 : 0.25), 2.45, gz + 2.7], target: [gx, 1.35, gz], label: id }
+  // high enough to look over the heads of visitors standing at the table
+  return { pos: [gx * 0.5 + (id === 'joemar' ? -0.2 : 0.25), 2.75, gz + 2.7], target: [gx, 1.38, gz], label: id }
 }
 
 /** Camera presets: [position, target] in world metres. */

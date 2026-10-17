@@ -70,7 +70,16 @@ export interface PersonProps {
   animate?: boolean
   castShadow?: boolean
   gait?: MutableRefObject<Gait>
+  /**
+   * Hide this person while the camera is closer than this (metres) to them, so close-up views
+   * don't fill the screen with a passer-by. Hidden people also stop catching clicks. 0 = never.
+   */
+  nearHide?: number
 }
+
+/** layer that neither the camera nor the pointer raycaster looks at */
+const HIDDEN_LAYER = 5
+const _pos = new THREE.Vector3()
 
 type ArmPose = [number, number, number] // upper.x, upper.z, elbow.x  (negative x = forward)
 const POSES: Record<Pose, { r: ArmPose; l: ArmPose; lean?: number; pitch?: number }> = {
@@ -203,6 +212,10 @@ export function Person(p: PersonProps) {
   const lFore = useRef<THREE.Group>(null)
   const rLeg = useRef<THREE.Group>(null)
   const lLeg = useRef<THREE.Group>(null)
+  const root = useRef<THREE.Group>(null)
+  const hidden = useRef(false)
+  const hideTick = useRef(0)
+  const nearHide = p.nearHide ?? 1
   const screen = useImageTexture('assets/screens/home.webp')
   const cover = useImageTexture('assets/textures/brochure-cover.webp')
   const shadow = p.castShadow ?? true
@@ -214,6 +227,23 @@ export function Person(p: PersonProps) {
   first.current ??= jointsFor(poseId, p.headYaw ?? 0, p.headPitch ?? 0)
   const joints = useRef<Joints>({ ...first.current })
   const shown = p.animate ? first.current : jointsFor(poseId, p.headYaw ?? 0, p.headPitch ?? 0)
+
+  // close to the camera: hide (and stop catching clicks) until it moves away again
+  useFrame(({ camera }) => {
+    const g = root.current
+    if (!g || nearHide <= 0) return
+    g.getWorldPosition(_pos)
+    const top = 1.75 * (p.scale ?? 1)
+    const cy = camera.position.y
+    const dy = cy > top ? cy - top : cy < 0 ? -cy : 0
+    const d = Math.hypot(camera.position.x - _pos.x, dy, camera.position.z - _pos.z)
+    const near = d < (hidden.current ? nearHide + 0.2 : nearHide)
+    // re-apply now and then while hidden, in case a highlight outline was added meanwhile
+    if (near === hidden.current && !(near && ++hideTick.current % 30 === 0)) return
+    hidden.current = near
+    g.visible = !near
+    g.traverse((o) => o.layers.set(near ? HIDDEN_LAYER : 0))
+  })
 
   useFrame(({ clock }, delta) => {
     if (!p.animate) return
@@ -326,7 +356,7 @@ export function Person(p: PersonProps) {
 
   const hs = p.hairStyle ?? 'short'
   return (
-    <group position={p.position} rotation={[0, p.rotation ?? 0, 0]} scale={p.scale ?? 1}>
+    <group ref={root} position={p.position} rotation={[0, p.rotation ?? 0, 0]} scale={p.scale ?? 1}>
       <group ref={body}>
         {/* legs pivot at the hips so they can swing */}
         {([1, -1] as const).map((s) => (
@@ -377,7 +407,7 @@ export function Person(p: PersonProps) {
               <Hl />
             </mesh>
             {hs !== 'buzz' && <mesh geometry={g.hairCap} material={hair} position={[0, 0.012, -0.012]} rotation={[-0.25, 0, 0]} />}
-            {hs === 'buzz' && <mesh geometry={g.hairCap} material={hair} position={[0, 0.004, -0.004]} scale={0.96} rotation={[-0.15, 0, 0]} />}
+            {hs === 'buzz' && <mesh geometry={g.hairCap} material={hair} position={[0, 0.006, -0.004]} scale={[0.985, 1, 0.985]} rotation={[-0.15, 0, 0]} />}
             {hs === 'long' && <mesh geometry={g.hairLong} material={hair} position={[0, -0.1, -0.06]} scale={[1.15, 1, 0.55]} />}
             {hs === 'ponytail' && <mesh geometry={g.hairLong} material={hair} position={[0, -0.06, -0.12]} scale={[0.45, 0.8, 0.45]} rotation={[0.35, 0, 0]} />}
             {hs === 'bun' && <mesh geometry={g.bun} material={hair} position={[0, 0.1, -0.08]} />}

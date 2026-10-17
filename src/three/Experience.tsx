@@ -152,13 +152,21 @@ function Hotspots() {
 /** Marks the scene ready once the first frame with all assets has rendered. */
 function Ready() {
   const done = useRef(false)
+  const alive = useRef(true)
   const invalidate = useThree((st) => st.invalidate)
   // in on-demand mode (reduced motion) nothing else asks for the first full frame
-  useEffect(() => invalidate(), [invalidate])
+  useEffect(() => {
+    alive.current = true
+    invalidate()
+    return () => {
+      alive.current = false
+    }
+  }, [invalidate])
   useFrame(() => {
     if (done.current) return
     done.current = true
-    requestAnimationFrame(() => store.set({ sceneReady: true }))
+    // a scene replaced in the meantime (quick quality changes) must not mark its successor ready
+    requestAnimationFrame(() => alive.current && store.set({ sceneReady: true }))
   })
   return null
 }

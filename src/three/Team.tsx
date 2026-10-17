@@ -77,6 +77,8 @@ function TeamMember({ m, animate, shadow }: { m: Member; animate: boolean; shado
   // the selected member waves at the visitor; otherwise their usual pose, or their reply to a visitor
   const pose = selected ? 'wave' : (reaction?.pose ?? s.pose)
   const scale = s.scale ?? 1
+  // the lead's tag sits a little higher than his neighbours', so the expanded tags never overlap
+  const tagY = TAG_Y * scale + (m.lead ? 0.24 : 0)
 
   return (
     <group>
@@ -98,6 +100,7 @@ function TeamMember({ m, animate, shadow }: { m: Member; animate: boolean; shado
                 animate={animate}
                 phase={s.x * 3 + 0.5}
                 castShadow={shadow}
+                nearHide={0.45}
               />
             </HighlightProvider>
           </group>
@@ -105,7 +108,7 @@ function TeamMember({ m, animate, shadow }: { m: Member; animate: boolean; shado
       </group>
       {state !== 'none' && <FloorMarker size={[0.7, 0.7]} position={[s.x, 0.02, s.z]} strong={selected} />}
       {labels && (
-        <Html position={[s.x, TAG_Y * scale, s.z]} center zIndexRange={[40, 0]} style={{ pointerEvents: 'auto' }}>
+        <Html position={[s.x, tagY, s.z]} center zIndexRange={[40, 0]} style={{ pointerEvents: 'auto' }}>
           <button
             type="button"
             className={`nametag${m.lead ? ' lead' : ''}${selected ? ' is-on' : ''}${hovered ? ' is-hover' : ''}${expanded ? ' expanded' : ''}`}
@@ -127,7 +130,7 @@ function TeamMember({ m, animate, shadow }: { m: Member; animate: boolean; shado
         </Html>
       )}
       {labels && animate && reaction?.say && !selected && (
-        <Html position={[s.x, 2.42 * scale, s.z]} center zIndexRange={[35, 0]} style={{ pointerEvents: 'none' }}>
+        <Html position={[s.x, tagY + 0.4, s.z]} center zIndexRange={[35, 0]} style={{ pointerEvents: 'none' }}>
           <div ref={bubble} className="bubble team" style={{ borderColor: m.color }}>
             <b>{m.firstName}:</b> {reaction.say}
           </div>

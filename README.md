@@ -5,20 +5,21 @@ A full-screen, real-time 3D walk-through of the **TechCase** campus technology s
 It is a static site (React + Vite + Three.js) with no backend, published on GitHub Pages:
 **https://itsmeeremiyaaaa.github.io/techcase-booth/**
 
-> The booth uses the real StudyQuest roll-up, brochure, fox mascot and app screenshots. The TechCase mark is still placeholder artwork. Team bios are sample text. Booth dimensions are planning estimates.
+> The booth uses the real StudyQuest roll-up, brochure, fox mascot and app screenshots, and the TechCase event uses the BSIT SITeS seal. Team bios are sample text. Booth dimensions are planning estimates.
 
 ---
 
 ## What's in it
 
-- **Full-screen 3D gym.** A basketball court with line markings and hoops, bleachers with spectators, a scoreboard, the TechCase wall banner, neighbouring booths and students walking around.
-- **StudyQuest booth, in the app's colours.** A dark brown mat with an orange edge, a 3 × 2.4 m StudyQuest backdrop with the fox mascot, an orange table cover with the logo and “Study. Compete. Level Up.”, the team's real 33 × 80 in roll-up, a stack of the real tri-fold brochures, StudyQuest-styled QR stands, two phones and a tablet with real app screens, and orange, cream, purple and gold balloon columns.
-- **The team.** Jeremiah (Developer & Project Leader) stands in the centre behind the tablet, with Peter, Sharwin and Joemar beside him. Hover or tap anyone (or their name tag) to see their profile; the selected member waves. A Team panel lists all four.
+- **Full-screen 3D gym.** A basketball court with line markings and hoops, bleachers with spectators (mostly in SMCBI uniforms), a scoreboard, the TechCase wall banner with the SITeS seal, and neighbouring booths.
+- **StudyQuest booth, in the app's colours.** A dark brown mat with an orange edge, a 3 × 2.4 m StudyQuest backdrop with the fox mascot, an orange table cover with the logo and “Study. Compete. Level Up.”, the team's real 33 × 80 in roll-up, a stack of the real tri-fold brochures, StudyQuest-styled QR stands, two phones and a landscape tablet with real app screens, and orange, cream, purple and gold balloon columns.
+- **The team, in SMCBI uniform.** All four wear the men's uniform (light blue polo with the school seal on the pocket, dark slacks). Jeremiah (Developer & Project Leader) stands in the centre behind the tablet, with Peter, Sharwin and Joemar beside him. Hover or tap anyone (or their name tag) to see their profile; the selected member waves. A Team panel lists all four.
+- **Visitors who walk and use the booth.** Students walk up from the court, try the demo phones, read the roll-up, take a brochure and scan the QR code; a teacher with a clipboard visits each booth; friends walk laps of the court. They share the table spots without bumping into each other, and the team member nearest turns to them and answers in a speech bubble. Click any visitor to make them wave.
 - **Interaction.** Hover highlights, outlines and floor markers, clickable pins, and an info panel for each booth part (a bottom sheet on phones).
 - **About StudyQuest panel.** The fox mascot, the app's features and supported courses, a swipeable gallery of real screenshots, a QR code, a "Play StudyQuest" button, the feedback page and the contact email.
 - **Camera.** Smooth orbit, zoom and limited panning; Reset and Focus booth buttons; presets for Overview, Table, Banner, Devices, Visitors and Full court; keyboard control.
 - **Welcome card.** Shown after loading, with "Explore the booth", "About StudyQuest" and "Meet the team".
-- **Performance.** A quality setting per device (Auto/High/Medium/Low), a capped pixel ratio that drops automatically when the frame rate does, instancing for repeated objects, shared geometry and materials freed on unmount, and code-splitting so the 3D bundle loads after the first paint.
+- **Performance.** A graphics menu (Auto/High/Medium/Low; Auto picks a level for the device and steps down by itself if the frame rate stays low), a camera that stays put when the level changes, a capped pixel ratio that drops automatically when the frame rate does, instancing for repeated objects, shared geometry and materials freed on unmount, and code-splitting so the 3D bundle loads after the first paint.
 - **Fallback.** A still render with every booth panel and the About panel still available, used automatically when WebGL is missing or the scene fails to start.
 - **Accessibility.** Real buttons with labels and visible focus, keyboard camera control, Esc to close panels, and reduced-motion support (no idle animation, instant camera moves).
 
@@ -68,9 +69,9 @@ For another base path: `VITE_BASE=/my-repo/ npm run build`, or `VITE_BASE=/` for
 
 ```
 .github/workflows/deploy.yml   Build + deploy to GitHub Pages on every push to main
-design-src/                    HTML templates for the tablet screen and the print textures
+design-src/                    Print templates (HTML), the roll-up PDF, the tablet screenshot, render script
 public/assets/
-  brand/                       StudyQuest bolt mark, fox mascot card, TechCase placeholder mark
+  brand/                       StudyQuest bolt mark, fox mascot card, TechCase (SITeS) seal
   screens/                     Real StudyQuest screenshots (phones) + tablet composite
   textures/                    Backdrop, roll-up (from the team's PDF), brochure, table front, wall banner, scoreboard
   fallback/                    Still render used when 3D is unavailable
@@ -80,7 +81,7 @@ src/
   content/team.ts              The four developers: names, roles, sample bios
   components/Showcase.tsx      Full-screen layout: top bar, bottom bar, welcome card, panels
   components/InfoPanel.tsx     Booth-part panel and About StudyQuest panel
-  three/                       3D scene: Experience, Court, Booth, Team, People, views, textures
+  three/                       3D scene: Experience, Court, Booth, Team, People, Visitors, crowd, views, textures
   lib/                         Small store, device detection
   styles/global.css            All styles
 ```
@@ -93,11 +94,14 @@ src/
 | About StudyQuest text and feature list | `appInfo` in `src/content/booth.ts` |
 | Team names, roles and bios (bios are sample text) | `src/content/team.ts` |
 | Where each team member stands and how they look | `TEAM_SPOTS` in `src/three/views.ts` |
+| Visitor routes, what they do and say, and the team's replies | `WALKERS` in `src/three/Visitors.tsx`; booth spots in `src/three/crowd.ts` |
+| Uniform colours | `UNIFORM` in `src/three/People.tsx` |
 | Booth panel copy and dimensions | `boothObjects` in `src/content/booth.ts` |
 | App screenshots | Replace files in `public/assets/screens/` (374 × 810 phone crops) and update `appScreens` captions |
-| Logos | `studyquest-mark.svg` (redrawn bolt mark); replace `techcase-mark-placeholder.svg` with the official TechCase logo |
+| Logos | `studyquest-mark.svg` (redrawn bolt mark); `techcase-logo.webp` (the SITeS seal, also used for the favicon and the wall banner) |
 | Roll-up | Replace `design-src/StudyQuest-Rollup-Banner-33x80.pdf`, then `python3 design-src/render.py rollup` (needs poppler) |
-| Backdrop, roll-up, table front, tablet screen | Edit `design-src/print.html` / `design-src/screens.html`, then re-render (below) |
+| Tablet screen | Replace `design-src/tablet-home.png` (a wide screenshot), then `python3 design-src/render.py tablet` |
+| Backdrop, table front, wall banner, scoreboard | Edit `design-src/print.html`, then `python3 design-src/render.py print` |
 | Camera presets and pin positions | `src/three/views.ts` |
 
 **Re-rendering the artwork (optional):**
@@ -105,10 +109,10 @@ src/
 ```bash
 pip install playwright pillow && python -m playwright install chromium
 node design-src/build-icons.mjs
-python3 design-src/render.py          # or: render.py screens | print | rollup
+python3 design-src/render.py          # or: render.py tablet | print | rollup
 ```
 
-Screenshots that show other students' names were left out of the gallery and the booth artwork on purpose. Keep that in mind if you add more.
+Screenshots that show other students' names were left out of the phone gallery and the booth artwork on purpose. The tablet screenshot was supplied by the team and shows a rival's first name in the "Rival of the week" card. Keep that in mind if you add more.
 
 ## Deploying to GitHub Pages
 

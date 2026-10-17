@@ -2,7 +2,7 @@
 <!--
   Print designs for the 3D booth textures.
   - backdrop + tablefront: StudyQuest booth art, matched to the StudyQuest brochure and roll-up (Fredoka + Nunito, orange / cream / brown / purple)
-  - wallbanner + scoreboard: TechCase venue graphics (the TechCase mark is a placeholder)
+  - wallbanner + scoreboard: TechCase venue graphics with the BSIT SITeS seal
   The roll-up texture is rendered straight from the team's roll-up PDF, not from this file.
   Render with: python3 design-src/render.py print
 -->
@@ -16,7 +16,7 @@
 :root {
   --orange: #E8935C; --orange-2: #DF8148; --peach: #F2B48B; --cream: #FFF6EC; --brown: #2B1D14; --rust: #B4531E;
   --purple: #5B3FC0; --purple-2: #7B5CE0; --gold: #F2B33D; --green: #2E7D57;
-  --blue: #1F4BD8; --navy: #0B1B4D; --cyan: #3FD0F0;
+  --blue: #1F4BD8; --navy: #0B1B4D; --cyan: #3FD0F0; --sites: #143652; --steel: #A9C0D6;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #333; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; font-family: 'Nunito', sans-serif; }
@@ -45,7 +45,7 @@ h1, h2, .fr { font-family: 'Fredoka', sans-serif; letter-spacing: -0.01em; }
 #tablefront { width: 1440px; height: 608px; background: var(--orange); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
 /* ============ VENUE: WALL BANNER + SCOREBOARD ============ */
-#wallbanner { width: 2400px; height: 480px; background: var(--navy); position: relative; overflow: hidden; color: #fff; display: flex; align-items: center; padding: 0 110px; gap: 50px; }
+#wallbanner { width: 2400px; height: 480px; background: linear-gradient(180deg, #1C4568, var(--sites)); position: relative; overflow: hidden; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 110px; gap: 60px; text-align: center; }
 #scoreboard { width: 800px; height: 400px; background: #0B0D12; color: #FFB02E; font-family: 'Fredoka'; position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; text-align: center; padding: 30px; }
 #scoreboard .lbl { font-size: 30px; color: #E8ECF5; font-weight: 600; letter-spacing: .14em; }
 #scoreboard .num { font-size: 120px; font-weight: 700; text-shadow: 0 0 18px rgba(255,170,40,.7); letter-spacing: .04em; }
@@ -106,7 +106,7 @@ h1, h2, .fr { font-family: 'Fredoka', sans-serif; letter-spacing: -0.01em; }
     </div>
   </div>
   <div style="position:absolute;left:0;right:0;bottom:0;height:56px;background:var(--brown);color:var(--cream);display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:800">
-    <img src="../public/assets/brand/techcase-mark-placeholder.svg" width="34" height="34" alt="">TechCase Campus Technology Showcase · English &amp; Tagalog
+    <img src="../public/assets/brand/techcase-logo.webp" width="40" height="40" alt="">TechCase Campus Technology Showcase · English &amp; Tagalog
   </div>
 </section>
 
@@ -125,13 +125,15 @@ h1, h2, .fr { font-family: 'Fredoka', sans-serif; letter-spacing: -0.01em; }
 
 <!-- ======================= WALL BANNER (TechCase venue) ======================= -->
 <section id="wallbanner">
-  <div style="position:absolute;left:0;top:0;bottom:0;width:36px;background:var(--cyan)"></div>
-  <div style="position:absolute;right:0;top:0;bottom:0;width:36px;background:var(--cyan)"></div>
-  <img class="mark" src="../public/assets/brand/techcase-mark-placeholder.svg" width="230" height="230" alt="">
+  <div style="position:absolute;left:0;top:0;bottom:0;width:36px;background:var(--steel)"></div>
+  <div style="position:absolute;right:0;top:0;bottom:0;width:36px;background:var(--steel)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:22px;background:var(--steel);opacity:.55"></div>
+  <img class="mark" src="../public/assets/brand/techcase-logo.webp" width="340" height="340" alt="" style="filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))">
   <div>
     <div class="fr" style="font-size:180px;font-weight:700;line-height:.95">TechCase</div>
-    <div style="font-size:52px;font-weight:800;letter-spacing:.22em;opacity:.9;margin-top:20px">CAMPUS TECHNOLOGY SHOWCASE</div>
+    <div style="font-size:52px;font-weight:800;letter-spacing:.22em;opacity:.92;margin-top:20px">CAMPUS TECHNOLOGY SHOWCASE</div>
   </div>
+  <img src="../public/assets/brand/techcase-logo.webp" width="340" height="340" alt="" style="filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))">
 </section>
 
 <!-- ======================= SCOREBOARD ======================= -->

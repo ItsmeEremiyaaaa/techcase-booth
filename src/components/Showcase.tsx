@@ -1,9 +1,9 @@
 import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react'
-import { CircleHelp, Focus, Gauge, Hand, Info, Maximize, Minimize, Minus, MousePointerClick, Plus, RotateCcw, Tag, Users, X } from 'lucide-react'
+import { Check, CircleHelp, Focus, Gauge, Hand, Info, Maximize, Minimize, Minus, MousePointerClick, Plus, RotateCcw, Tag, Users, X } from 'lucide-react'
 import { asset, site } from '../config/site'
 import { boothObjects, objectOrder } from '../content/booth'
 import { hasWebGL } from '../lib/device'
-import { cameraApi, closePanels, effectiveQuality, openAbout, openTeam, resetView, selectObject, store, useStore, type QualityMode, type ViewId } from '../lib/store'
+import { cameraApi, closePanels, effectiveQuality, openAbout, openTeam, resetView, selectObject, store, useStore, type Quality, type QualityMode, type ViewId } from '../lib/store'
 import { teamById } from '../content/team'
 import { useReducedMotion } from '../hooks/useMedia'
 import { AboutPanel, InfoPanel, MemberPanel, TeamPanel } from './InfoPanel'
@@ -22,6 +22,12 @@ const VIEW_CHIPS: { id: ViewId; label: string }[] = [
 
 const QUALITY_ORDER: QualityMode[] = ['auto', 'high', 'medium', 'low']
 const QUALITY_LABEL: Record<QualityMode, string> = { auto: 'Auto', high: 'High', medium: 'Medium', low: 'Low' }
+const QUALITY_HELP: Record<QualityMode, string> = {
+  auto: 'Picks a level for this device and steps down if it gets choppy',
+  high: 'Reflective floor, sharp shadows, full crowd',
+  medium: 'Softer shadows, smaller crowd',
+  low: 'No shadows or crowd, the fastest',
+}
 
 class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false }
@@ -37,14 +43,14 @@ class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean
   }
 }
 
-function Loader({ done }: { done: boolean }) {
+function Loader({ done, label }: { done: boolean; label: string }) {
   const progress = useStore((s) => s.progress)
   return (
     <div className={`loader${done ? ' done' : ''}`} role="status" aria-live="polite" aria-hidden={done}>
       <div className="loader-card">
-        <img src={asset(site.logos.techcase)} alt="" width={56} height={56} />
+        <img src={asset(site.logos.techcase)} alt="" width={72} height={72} />
         <strong>{site.eventName} Showcase</strong>
-        <span>Setting up the gym…</span>
+        <span>{label}</span>
         <div className="loader-bar" aria-hidden="true">
           <i style={{ width: `${Math.max(8, Math.round(progress))}%` }} />
         </div>
@@ -110,6 +116,72 @@ function Help() {
   )
 }
 
+/** Graphics quality picker. Changing the level restarts the 3D scene; the camera stays where it was. */
+function QualityMenu({ mode, quality, autoQuality }: { mode: QualityMode; quality: Quality; autoQuality: Quality }) {
+  const [open, setOpen] = useState(false)
+  const wrap = useRef<HTMLDivElement>(null)
+  const btn = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: PointerEvent) => {
+      if (!wrap.current?.contains(e.target as Node)) setOpen(false)
+    }
+    // capture phase, so Esc closes this menu before it closes any open panel
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.stopImmediatePropagation()
+      setOpen(false)
+      btn.current?.focus()
+    }
+    document.addEventListener('pointerdown', onDown)
+    document.addEventListener('keydown', onKey, true)
+    return () => {
+      document.removeEventListener('pointerdown', onDown)
+      document.removeEventListener('keydown', onKey, true)
+    }
+  }, [open])
+  const pick = (m: QualityMode) => {
+    setOpen(false)
+    if (m !== mode) store.set({ qualityMode: m, notice: null })
+  }
+  return (
+    <div className="quality" ref={wrap}>
+      <button
+        ref={btn}
+        type="button"
+        className="icon-btn quality-btn"
+        aria-expanded={open}
+        aria-controls="quality-menu"
+        onClick={() => setOpen((o) => !o)}
+        aria-label={`Graphics quality: ${QUALITY_LABEL[mode]}${mode === 'auto' ? ` (${QUALITY_LABEL[quality]})` : ''}`}
+      >
+        <Gauge size={18} aria-hidden="true" />
+        <span aria-hidden="true">
+          {mode === 'auto' && <span className="ql-mode">Auto · </span>}
+          {QUALITY_LABEL[quality]}
+        </span>
+      </button>
+      {open && (
+        <div className="quality-menu" id="quality-menu" role="group" aria-label="Graphics quality">
+          <p className="quality-title">Graphics</p>
+          {QUALITY_ORDER.map((m) => (
+            <button key={m} type="button" className="quality-opt" aria-pressed={m === mode} onClick={() => pick(m)}>
+              <span>
+                <b>
+                  {QUALITY_LABEL[m]}
+                  {m === 'auto' && <em> · {QUALITY_LABEL[autoQuality]} on this device</em>}
+                </b>
+                <small>{QUALITY_HELP[m]}</small>
+              </span>
+              {m === mode && <Check size={18} aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /** The whole site: a full-screen 3D TechCase showcase with overlay controls. */
 export function Showcase() {
   const reduced = useReducedMotion()
@@ -129,13 +201,26 @@ export function Showcase() {
   const intro = useStore((s) => s.intro)
   const ready = useStore((s) => s.sceneReady)
   const qualityMode = useStore((s) => s.qualityMode)
+  const autoQuality = useStore((s) => s.autoQuality)
   const quality = useStore(effectiveQuality)
+  const notice = useStore((s) => s.notice)
+  const [everReady, setEverReady] = useState(false)
   const labels = useStore((s) => s.labels)
   const interacted = useStore((s) => s.interacted)
   const view = useStore((s) => s.view)
 
   const show3d = webgl && mode === '3d'
   const panel = about || teamOpen || !!member || !!selected
+
+  useEffect(() => {
+    if (ready) setEverReady(true)
+  }, [ready])
+
+  useEffect(() => {
+    if (!notice) return
+    const t = window.setTimeout(() => store.set({ notice: null }), 6000)
+    return () => window.clearTimeout(t)
+  }, [notice])
 
   useEffect(() => {
     const onFs = () => setFull(!!document.fullscreenElement)
@@ -190,11 +275,6 @@ export function Showcase() {
     }
   }
 
-  const cycleQuality = () => {
-    const next = QUALITY_ORDER[(QUALITY_ORDER.indexOf(qualityMode) + 1) % QUALITY_ORDER.length]
-    store.set({ qualityMode: next, sceneReady: false })
-  }
-
   const goView = (id: ViewId) => {
     closePanels()
     store.set({ intro: false })
@@ -217,7 +297,7 @@ export function Showcase() {
               <Experience quality={quality} reducedMotion={reduced} visible={visible} />
             </Suspense>
           </SceneBoundary>
-          <Loader done={ready} />
+          <Loader done={ready} label={everReady ? `Switching to ${QUALITY_LABEL[quality]} graphics…` : 'Setting up the gym…'} />
         </>
       ) : (
         <img className="stage-still" src={asset(site.sceneStill)} alt={`Still render of the ${site.appName} booth at the ${site.eventName} showcase in the school gym.`} />
@@ -226,7 +306,6 @@ export function Showcase() {
       {/* ---------- top bar ---------- */}
       <header className="topbar">
         <div className="brand" aria-label={`${site.eventName} Showcase`}>
-          {/* PLACEHOLDER mark — replace public/assets/brand/techcase-mark-placeholder.svg with the official logo */}
           <img src={asset(site.logos.techcase)} alt="" width={40} height={40} />
           <span>
             <span className="brand-name">{site.eventName} Showcase</span>
@@ -262,18 +341,7 @@ export function Showcase() {
               <button type="button" className="icon-btn" aria-pressed={labels} onClick={() => store.set({ labels: !labels })} aria-label={labels ? 'Hide pins' : 'Show pins'}>
                 <Tag size={20} />
               </button>
-              <button
-                type="button"
-                className="icon-btn quality-btn"
-                onClick={cycleQuality}
-                aria-label={`Graphics quality: ${QUALITY_LABEL[qualityMode]}${qualityMode === 'auto' ? ` (${QUALITY_LABEL[quality]})` : ''}. Select to change.`}
-              >
-                <Gauge size={18} aria-hidden="true" />
-                <span aria-hidden="true">
-                  {qualityMode === 'auto' && <span className="ql-mode">Auto · </span>}
-                  {QUALITY_LABEL[quality]}
-                </span>
-              </button>
+              <QualityMenu mode={qualityMode} quality={quality} autoQuality={autoQuality} />
             </>
           )}
           {canFullscreen && (
@@ -285,6 +353,12 @@ export function Showcase() {
       </header>
 
       {help && <Help />}
+
+      {notice && (
+        <div className="toast" role="status">
+          <Gauge size={16} aria-hidden="true" /> {notice}
+        </div>
+      )}
 
       {/* ---------- bottom bar ---------- */}
       <div className="bottombar">

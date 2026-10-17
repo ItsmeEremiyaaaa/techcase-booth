@@ -4,8 +4,9 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { CameraControls, ContactShadows, Environment, Html, Lightformer, PerformanceMonitor, useProgress } from '@react-three/drei'
 import { BookOpen, Flag, Megaphone, QrCode, Smartphone, Table2, Users } from 'lucide-react'
 import { boothObjects, type ObjectId } from '../content/booth'
-import { panelOpen, registerCamera, selectObject, store, useStore, type Quality, type ViewId } from '../lib/store'
-import { Booth, EventDressing, Students } from './Booth'
+import { lowerAutoQuality, panelOpen, registerCamera, saveCameraPose, selectObject, store, useStore, type Quality, type ViewId } from '../lib/store'
+import { Booth, EventDressing } from './Booth'
+import { Visitors } from './Visitors'
 import { Court } from './Court'
 import { BleacherCrowd } from './People'
 import { HOTSPOTS, VIEWS } from './views'
@@ -79,10 +80,18 @@ function Controls({ reducedMotion }: { reducedMotion: boolean }) {
       rotate(az: number, pol: number) {
         void c.rotate(THREE.MathUtils.degToRad(az), THREE.MathUtils.degToRad(pol), !reducedMotion)
       },
+      setPose({ pos, target }) {
+        void c.setLookAt(...pos, ...target, false)
+        applyOffset(Math.hypot(pos[0] - target[0], pos[1] - target[1], pos[2] - target[2]), true)
+      },
     })
     const onStart = () => store.set({ interacted: true, view: null })
     c.addEventListener('controlstart', onStart)
     return () => {
+      // remember the camera so a restart (quality change) puts the visitor back where they were
+      const pos = c.getPosition(new THREE.Vector3())
+      const target = c.getTarget(new THREE.Vector3())
+      saveCameraPose({ pos: [pos.x, pos.y, pos.z], target: [target.x, target.y, target.z] })
       c.removeEventListener('controlstart', onStart)
       unsub()
       registerCamera(null)
@@ -238,7 +247,7 @@ function Scene({ quality, reducedMotion }: { quality: Quality; reducedMotion: bo
     <>
       <Court quality={quality} />
       <Booth quality={quality} animate={animate} />
-      <Students quality={quality} animate={animate} />
+      <Visitors quality={quality} animate={animate} />
       <EventDressing quality={quality} animate={animate} />
       <BleacherCrowd count={SETTINGS[quality].crowd} />
       <ContactShadows position={[0, 0.024, -2.6]} scale={[10, 7]} blur={2.2} opacity={0.42} far={2.2} resolution={quality === 'high' ? 1024 : 512} frames={1} color="#0B1B4D" />
@@ -250,7 +259,23 @@ function Scene({ quality, reducedMotion }: { quality: Quality; reducedMotion: bo
 
 export default function Experience({ quality, reducedMotion, visible }: ExperienceProps) {
   const s = SETTINGS[quality]
-  const [dpr, setDpr] = useState(Math.min(s.dpr, typeof window !== 'undefined' ? window.devicePixelRatio : 1))
+  const maxDpr = Math.min(s.dpr, typeof window !== 'undefined' ? window.devicePixelRatio : 1)
+  const [dpr, setDpr] = useState(maxDpr)
+  const dprRef = useRef(dpr)
+  dprRef.current = dpr
+  const ready = useStore((st) => st.sceneReady)
+  const readyAt = useRef(0)
+  useEffect(() => {
+    if (ready) readyAt.current = performance.now()
+  }, [ready])
+
+  // Frame rate too low: first drop the pixel ratio, then (Auto mode only) step down one quality level.
+  // Ignored while loading and for a few seconds after, when shader compiles make every device look slow.
+  const onDecline = () => {
+    if (!readyAt.current || performance.now() - readyAt.current < 5000) return
+    if (dprRef.current > 1) setDpr(1)
+    else lowerAutoQuality()
+  }
 
   useEffect(() => {
     store.set({ sceneReady: false })
@@ -274,7 +299,8 @@ export default function Experience({ quality, reducedMotion, visible }: Experien
     >
       <color attach="background" args={['#F1E8DE']} />
       <fog attach="fog" args={['#F1E8DE', 45, 110]} />
-      <PerformanceMonitor flipflops={3} onDecline={() => setDpr(1)} onIncline={() => setDpr(Math.min(s.dpr, window.devicePixelRatio))} onFallback={() => setDpr(1)} />
+      {/* only measured while frames run continuously: on-demand (reduced motion) or hidden tabs would read as "slow" */}
+      {visible && !reducedMotion && <PerformanceMonitor flipflops={3} onDecline={onDecline} onIncline={() => setDpr(maxDpr)} onFallback={() => setDpr(1)} />}
       <ContextGuard />
       <ProgressReporter />
       <WakeOnVisible visible={visible} />

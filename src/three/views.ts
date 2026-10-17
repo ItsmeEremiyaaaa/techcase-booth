@@ -9,16 +9,16 @@ const BZ = -3.4
 
 /**
  * Where each team member stands, in booth-local coordinates [x, z], plus how they look.
- * Jeremiah stands in the centre behind the tablet.
+ * All four wear the SMCBI men's uniform. Jeremiah stands in the centre behind the tablet.
  */
 export const TEAM_SPOTS: Record<
   MemberId,
-  { x: number; z: number; rot: number; pose: Pose; skin: string; hair: string; hairStyle: HairStyle; bottom: string; scale?: number; headYaw?: number; headPitch?: number }
+  { x: number; z: number; rot: number; pose: Pose; skin: string; hair: string; hairStyle: HairStyle; scale?: number; headYaw?: number; headPitch?: number }
 > = {
-  jeremiah: { x: 0, z: -0.62, rot: 0, pose: 'present', skin: '#C68A62', hair: '#15100C', hairStyle: 'short', bottom: '#2B1D14', headPitch: 0.12 },
-  peter: { x: -0.8, z: -0.58, rot: 0.22, pose: 'talk', skin: '#B97A55', hair: '#1B1410', hairStyle: 'buzz', bottom: '#2B1D14', scale: 0.98, headYaw: 0.15 },
-  sharwin: { x: 0.8, z: -0.58, rot: -0.22, pose: 'crossed', skin: '#D09A70', hair: '#120D0A', hairStyle: 'cap', bottom: '#2B1D14', scale: 1.01, headYaw: -0.15 },
-  joemar: { x: 1.42, z: -0.12, rot: -0.75, pose: 'stand', skin: '#A86F4C', hair: '#1B1410', hairStyle: 'short', bottom: '#2B1D14', scale: 0.99 },
+  jeremiah: { x: 0, z: -0.62, rot: 0, pose: 'present', skin: '#C68A62', hair: '#15100C', hairStyle: 'curly', headPitch: 0.12 },
+  peter: { x: -0.8, z: -0.58, rot: 0.22, pose: 'talk', skin: '#B97A55', hair: '#1B1410', hairStyle: 'buzz', scale: 0.98, headYaw: 0.15 },
+  sharwin: { x: 0.8, z: -0.58, rot: -0.22, pose: 'crossed', skin: '#D09A70', hair: '#120D0A', hairStyle: 'side', scale: 1.01, headYaw: -0.15 },
+  joemar: { x: 1.42, z: -0.12, rot: -0.75, pose: 'stand', skin: '#A86F4C', hair: '#1B1410', hairStyle: 'short', scale: 0.99 },
 }
 
 function memberView(id: MemberId): { pos: V3; target: V3; label: string } {
@@ -34,7 +34,7 @@ export const VIEWS: Record<ViewId, { pos: V3; target: V3; label: string }> = {
   court: { pos: [17, 17.5, 22], target: [0, 0, -1.2], label: 'Full court' },
   booth: { pos: [4.6, 3.0, 4.4], target: [0, 1.1, -3.5], label: 'Booth' },
   table: { pos: [2.3, 2.7, -1.9], target: [0, 0.8, -3.2], label: 'Table' },
-  devices: { pos: [0.1, 1.72, -1.75], target: [0, 0.9, -3.3], label: 'Devices' },
+  devices: { pos: [0.15, 2.5, -2.1], target: [0, 0.82, -3.25], label: 'Devices' },
   banner: { pos: [-1.55, 1.9, -0.4], target: [-2.0, 1.15, -4.1], label: 'Banner' },
   backdrop: { pos: [0.6, 2.4, 1.6], target: [0, 1.35, -4.85], label: 'Backdrop' },
   qr: { pos: [3.4, 1.75, -0.9], target: [1.6, 0.95, -2.95], label: 'QR stands' },

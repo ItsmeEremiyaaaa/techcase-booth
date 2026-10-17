@@ -1,8 +1,0 @@
-<!-- PLACEHOLDER MARK — not the official TechCase logo. Replace this file with the real logo (keep the file name or update src/config/site.ts). -->
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="16" fill="#1F4BD8"/>
-  <path d="M25 19v-3a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v3" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
-  <rect x="13" y="19" width="38" height="30" rx="7" stroke="#fff" stroke-width="3.5"/>
-  <path d="M24 29h16M32 29v12" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
-  <circle cx="48" cy="17" r="5.5" fill="#3FD0F0" stroke="#1F4BD8" stroke-width="2"/>
-</svg>

@@ -44,7 +44,7 @@ export function AppPreview({ initial = 0 }: { initial?: number }) {
           <ChevronLeft size={20} />
         </button>
         <div className={`device${s.tablet ? ' tablet' : ''}`}>
-          <img src={asset(s.src)} alt={`StudyQuest ${s.title} screen: ${s.caption}`} width={s.tablet ? 768 : 374} height={s.tablet ? 1024 : 810} draggable={false} />
+          <img src={asset(s.src)} alt={`StudyQuest ${s.title} screen: ${s.caption}`} width={s.tablet ? 1100 : 374} height={s.tablet ? 800 : 810} draggable={false} />
         </div>
         <button type="button" className="icon-btn" onClick={() => go(1)} aria-label="Next screen">
           <ChevronRight size={20} />

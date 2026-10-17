@@ -20,8 +20,15 @@ export type ViewId =
   | 'team'
   | `member-${MemberId}`
 
+export interface CameraPose {
+  pos: [number, number, number]
+  target: [number, number, number]
+}
+
 export interface CameraApi {
   goTo: (view: ViewId, instant?: boolean) => void
+  /** jump straight to a saved camera position (used when the scene restarts) */
+  setPose: (pose: CameraPose) => void
   zoom: (factor: number) => void
   rotate: (azimuthDeg: number, polarDeg: number) => void
 }
@@ -50,6 +57,8 @@ interface State {
   view: ViewId | null
   progress: number
   failed: boolean
+  /** short status message shown as a toast (e.g. Auto lowered the graphics) */
+  notice: string | null
 }
 
 let state: State = {
@@ -70,6 +79,7 @@ let state: State = {
   view: 'initial',
   progress: 0,
   failed: false,
+  notice: null,
 }
 
 const listeners = new Set<() => void>()
@@ -98,17 +108,35 @@ export function useStore<T>(selector: (s: State) => T): T {
 
 export const effectiveQuality = (s: State): Quality => (s.qualityMode === 'auto' ? s.autoQuality : s.qualityMode)
 
+const QUALITY_NAME: Record<Quality, string> = { high: 'High', medium: 'Medium', low: 'Low' }
+
+/** Auto mode only: drop one quality level when the device can't keep a smooth frame rate. */
+export function lowerAutoQuality() {
+  if (state.qualityMode !== 'auto' || state.autoQuality === 'low') return
+  const next: Quality = state.autoQuality === 'high' ? 'medium' : 'low'
+  store.set({ autoQuality: next, notice: `Auto switched to ${QUALITY_NAME[next]} graphics to keep things smooth.` })
+}
+
 /* ---- camera bridge: the 3D scene registers its controls here ---- */
 let camera: CameraApi | null = null
 let pendingView: ViewId | null = null
+let savedPose: CameraPose | null = null
+
+/** Remembers where the camera was, so a scene restart (e.g. a quality change) doesn't move the view. */
+export function saveCameraPose(pose: CameraPose) {
+  savedPose = pose
+}
 
 export function registerCamera(api: CameraApi | null) {
   camera = api
-  if (api) {
-    // jump straight to whatever view was requested before the scene existed (or the current one)
-    api.goTo(pendingView ?? state.view ?? 'initial', true)
-    pendingView = null
-  }
+  if (!api) return
+  // jump straight to whatever view was requested before the scene existed, the current preset,
+  // or exactly where the visitor had moved the camera before the scene restarted
+  const view = pendingView ?? state.view
+  pendingView = null
+  if (view) api.goTo(view, true)
+  else if (savedPose) api.setPose(savedPose)
+  else api.goTo('initial', true)
 }
 
 export const cameraApi = {

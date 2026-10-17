@@ -129,7 +129,8 @@ export const boothObjects: Record<ObjectId, BoothObject> = {
     id: 'students',
     kicker: 'Visitor area',
     title: 'How students try StudyQuest',
-    summary: 'The open space in front of the table, inside the court’s centre circle, is where visitors gather, scan and play.',
+    summary:
+      'The open space in front of the table is where visitors gather. Watch them walk up from the court, try the demo phones, read the roll-up, take a brochure and scan the QR code, while the team turns to help. Click any visitor to say hi.',
     steps: [
       { title: 'Discover', body: 'Students spot the backdrop and roll-up from the aisle, and someone from the team invites them over.' },
       { title: 'Scan', body: 'They scan the QR code to open StudyQuest in the browser, or tap Install to add it to their phone.' },
@@ -153,7 +154,11 @@ export const appScreens = [
   { id: 'profile', src: 'assets/screens/profile.webp', title: 'Profile', caption: 'Level progress, XP, streak, titles, section and badges.' },
 ] as const
 
-export const tabletScreen = { src: 'assets/screens/tablet.webp', title: 'Tablet', caption: 'Home and the weekly league side by side on the demo tablet.' }
+export const tabletScreen = {
+  src: 'assets/screens/tablet.webp',
+  title: 'Tablet',
+  caption: 'The home dashboard on the demo tablet: level and XP, the daily challenge, the rival of the week and the weekly boss.',
+}
 
 /** "About StudyQuest" panel content (from the app, the brochure and the roll-up). */
 export const appInfo = {

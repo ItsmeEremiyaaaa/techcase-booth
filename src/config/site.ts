@@ -1,6 +1,6 @@
 /**
  * Site-wide configuration. Edit these values instead of hunting through components.
- * Everything marked PLACEHOLDER should be replaced before the showcase.
+ * Brand files live in public/assets/brand/.
  */
 export const site = {
   eventName: 'TechCase',
@@ -13,9 +13,9 @@ export const site = {
 
   repoUrl: 'https://github.com/ItsmeEremiyaaaa/techcase-booth',
 
-  /** Logo marks. The TechCase mark is still a PLACEHOLDER — replace the file with the official logo. */
+  /** Logo marks. The TechCase event uses the BSIT SITeS (Society of Information Technology Students) seal. */
   logos: {
-    techcase: 'assets/brand/techcase-mark-placeholder.svg',
+    techcase: 'assets/brand/techcase-logo.webp',
     studyquest: 'assets/brand/studyquest-mark.svg',
   },
 
